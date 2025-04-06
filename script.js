@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     grecaptcha.ready(() => {
       // Replace 'your_site_key' with your actual reCAPTCHA site key
-      grecaptcha.execute('your_site_key', {action: 'submit'}).then(async (token) => {
+      grecaptcha.execute('6LdohQsrAAAAAKUe4KxI-3Jf2hxYREvgqeD9ZZUo', {action: 'submit'}).then(async (token) => {
         const payload = {
           email,
           selectedTithis,
