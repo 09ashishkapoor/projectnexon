@@ -73,36 +73,30 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const honeypot = document.getElementById('website').value;
 
-    grecaptcha.ready(() => {
-      // Replace 'your_site_key' with your actual reCAPTCHA site key
-      grecaptcha.execute('6LdohQsrAAAAAKUe4KxI-3Jf2hxYREvgqeD9ZZUo', {action: 'submit'}).then(async (token) => {
-        const payload = {
-          email,
-          selectedTithis,
-          'g-recaptcha-response': token,
-          website: honeypot
-        };
+    const payload = {
+      email,
+      selectedTithis,
+      website: honeypot
+    };
 
-        try {
-          const response = await fetch('/.netlify/functions/subscribe', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-
-          const data = await response.json();
-
-          alert(data.message);
-
-          if (response.ok) {
-            localStorage.setItem('tithi_submitted', 'true');
-            form.innerHTML = '<p style="color:#ff3b3b; text-align:center;">Thank you! You have successfully subscribed.</p>';
-          }
-        } catch (error) {
-          console.error('Error submitting form:', error);
-          alert('An error occurred. Please try again.');
-        }
+    try {
+      const response = await fetch('/.netlify/functions/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       });
-    });
+
+      const data = await response.json();
+
+      alert(data.message);
+
+      if (response.ok) {
+        localStorage.setItem('tithi_submitted', 'true');
+        form.innerHTML = '<p style="color:#ff3b3b; text-align:center;">Thank you! You have successfully subscribed.</p>';
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('An error occurred. Please try again.');
+    }
   });
 });

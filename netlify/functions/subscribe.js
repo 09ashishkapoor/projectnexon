@@ -74,50 +74,13 @@ exports.handler = async (event, context) => {
   try {
     // Parse the incoming request body
     const body = JSON.parse(event.body);
-    let { email, selectedTithis, 'g-recaptcha-response': recaptchaToken, website } = body;
+    let { email, selectedTithis, website } = body;
 
     // Honeypot check
     if (website && website.trim() !== '') {
       return {
         statusCode: 400,
         body: JSON.stringify({ message: 'Bot detected.' }),
-      };
-    }
-
-    // Verify reCAPTCHA
-    if (!recaptchaToken) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ message: 'reCAPTCHA token missing.' }),
-      };
-    }
-
-    const secretKey = process.env.RECAPTCHA_SECRET;
-    if (!secretKey) {
-      console.error('Missing RECAPTCHA_SECRET environment variable.');
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ message: 'Server misconfiguration.' }),
-      };
-    }
-
-    const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${recaptchaToken}`;
-    const recaptchaRes = await fetch(verifyUrl, { method: 'POST' });
-    let recaptchaData;
-    try {
-      recaptchaData = await recaptchaRes.json();
-    } catch (error) {
-      console.error('Error parsing reCAPTCHA response:', error);
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ message: 'Failed to parse reCAPTCHA response.' }),
-      };
-    }
-
-    if (!recaptchaData.success || (recaptchaData.score !== undefined && recaptchaData.score < 0.5)) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ message: 'reCAPTCHA verification failed or suspicious activity detected.' }),
       };
     }
 
@@ -130,17 +93,6 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Restrict to major email providers
-    const allowedDomains = [
-      'gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'icloud.com', 'aol.com', 'protonmail.com', 'live.com', 'msn.com', 'mail.com'
-    ];
-    const emailDomain = email.split('@')[1].toLowerCase();
-    if (!allowedDomains.includes(emailDomain)) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ message: 'Only major email providers are supported.' }),
-      };
-    }
 
     // Normalize email to lowercase to use as a consistent key
     email = email.toLowerCase();
