@@ -1,6 +1,6 @@
 // Import Netlify Blobs client
 const { getStore } = require('@netlify/blobs');
-const fetch = require('node-fetch');
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 // Define the Blob store name (should match what's enabled in Netlify UI/config)
 const storeName = 'subscriptions'; 
