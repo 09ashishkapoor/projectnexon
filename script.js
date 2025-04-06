@@ -88,7 +88,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const data = await response.json();
 
-      alert(data.message);
+      console.log('Subscribe response:', data);
+
+      if (data && data.message) {
+        alert(data.message);
+      } else {
+        alert('Subscription response received, but no message provided.');
+      }
 
       if (response.ok) {
         localStorage.setItem('tithi_submitted', 'true');
