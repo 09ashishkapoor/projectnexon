@@ -103,7 +103,16 @@ exports.handler = async (event, context) => {
 
     const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${recaptchaToken}`;
     const recaptchaRes = await fetch(verifyUrl, { method: 'POST' });
-    const recaptchaData = await recaptchaRes.json();
+    let recaptchaData;
+    try {
+      recaptchaData = await recaptchaRes.json();
+    } catch (error) {
+      console.error('Error parsing reCAPTCHA response:', error);
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ message: 'Failed to parse reCAPTCHA response.' }),
+      };
+    }
 
     if (!recaptchaData.success || (recaptchaData.score !== undefined && recaptchaData.score < 0.5)) {
       return {
