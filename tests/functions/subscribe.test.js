@@ -1,20 +1,16 @@
-jest.mock('@netlify/blobs', () => ({
-  getStore: () => ({
-    setJSON: jest.fn().mockResolvedValue(undefined),
-  }),
-}));
+// Mock Firebase configuration for tests
+jest.mock('../../config/firebase', () => require('../../config/firebase.test'));
 
-jest.mock('node-fetch', () => jest.fn());
-
+// Mock node-fetch properly
+jest.mock('node-fetch');
 const fetch = require('node-fetch');
-const { Response } = jest.requireActual('node-fetch');
 
 const { handler } = require('../../netlify/functions/subscribe');
 
 describe('subscribe function', () => {
   beforeEach(() => {
     process.env.RECAPTCHA_SECRET = 'dummy_secret';
-    fetch.mockReset();
+    jest.clearAllMocks();
   });
 
   const baseBody = {
@@ -22,10 +18,20 @@ describe('subscribe function', () => {
     'g-recaptcha-response': 'dummy_token',
   };
 
+  const baseHeaders = {
+    'user-agent': 'test-agent',
+  };
+
   it('should return 200 on successful subscription with valid CAPTCHA and domain', async () => {
-    fetch.mockResolvedValue(new Response(JSON.stringify({ success: true }), { status: 200 }));
+    const mockResponse = { success: true };
+    fetch.default.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(mockResponse),
+    });
+
     const event = {
       httpMethod: 'POST',
+      headers: baseHeaders,
       body: JSON.stringify({
         email: 'test@gmail.com',
         ...baseBody,
@@ -38,6 +44,7 @@ describe('subscribe function', () => {
   it('should return 400 if CAPTCHA token is missing', async () => {
     const event = {
       httpMethod: 'POST',
+      headers: baseHeaders,
       body: JSON.stringify({
         email: 'test@gmail.com',
         selectedTithis: ['Ashtami'],
@@ -49,9 +56,15 @@ describe('subscribe function', () => {
   });
 
   it('should return 400 if CAPTCHA verification fails', async () => {
-    fetch.mockResolvedValue(new Response(JSON.stringify({ success: false }), { status: 200 }));
+    const mockResponse = { success: false };
+    fetch.default.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(mockResponse),
+    });
+
     const event = {
       httpMethod: 'POST',
+      headers: baseHeaders,
       body: JSON.stringify({
         email: 'test@gmail.com',
         ...baseBody,
@@ -63,9 +76,15 @@ describe('subscribe function', () => {
   });
 
   it('should return 400 for disallowed email domain', async () => {
-    fetch.mockResolvedValue(new Response(JSON.stringify({ success: true }), { status: 200 }));
+    const mockResponse = { success: true };
+    fetch.default.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(mockResponse),
+    });
+
     const event = {
       httpMethod: 'POST',
+      headers: baseHeaders,
       body: JSON.stringify({
         email: 'user@unknown-domain.com',
         ...baseBody,

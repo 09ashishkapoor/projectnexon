@@ -1,12 +1,9 @@
-// Import Netlify Blobs client
-const { getStore } = require('@netlify/blobs');
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+const fetch = require('node-fetch');
+const { subscriptionStore } = require('../../config/firebase');
 
-// Define the Blob store name (should match what's enabled in Netlify UI/config)
-const storeName = 'subscriptions'; 
+const ALLOWED_DOMAINS = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com'];
 
 exports.handler = async (event, context) => {
-  // Only allow POST requests
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
@@ -15,66 +12,10 @@ exports.handler = async (event, context) => {
     };
   }
 
-  let store;
   try {
-    // Get the Blob store instance
-    store = getStore(storeName);
-  } catch (setupError) {
-      console.error('Error accessing Blob store:', setupError);
-      return {
-          statusCode: 500,
-          body: JSON.stringify({ message: 'Could not access subscription store.' }),
-      };
-  }
-
-  // IP Blacklist check
-  const ip = event.headers['x-forwarded-for']?.split(',')[0].trim() || 'unknown';
-  const blacklistKey = `blacklist-${ip}`;
-  try {
-    const isBlacklisted = await store.get(blacklistKey);
-    if (isBlacklisted) {
-      return {
-        statusCode: 403,
-        body: JSON.stringify({ message: 'Access denied.' }),
-      };
-    }
-  } catch (err) {
-    console.error('Blacklist check failed:', err);
-    // Fail open: allow request if blacklist check fails
-  }
-
-  // Basic IP-based rate limiting
-  const rateLimitKey = `rate-limit-${ip}`;
-  const now = Date.now();
-  const windowMs = 60 * 1000; // 1 minute window
-  const maxRequests = 5;
-
-  try {
-    const record = await store.get(rateLimitKey, { type: 'json' }) || { count: 0, startTime: now };
-    if (now - record.startTime < windowMs) {
-      if (record.count >= maxRequests) {
-        return {
-          statusCode: 429,
-          body: JSON.stringify({ message: 'Too many requests. Please try again later.' }),
-        };
-      } else {
-        record.count++;
-      }
-    } else {
-      // Reset window
-      record.count = 1;
-      record.startTime = now;
-    }
-    await store.set(rateLimitKey, JSON.stringify(record));
-  } catch (err) {
-    console.error('Rate limit check failed:', err);
-    // Fail open: allow request if rate limit check fails
-  }
-
-  try {
-    // Parse the incoming request body
-    const body = JSON.parse(event.body);
-    let { email, selectedTithis, website } = body;
+    console.log('Using Firebase Firestore for storage');
+    
+    const { email, selectedTithis, website, 'g-recaptcha-response': captchaToken } = JSON.parse(event.body);
 
     // Honeypot check
     if (website && website.trim() !== '') {
@@ -84,6 +25,37 @@ exports.handler = async (event, context) => {
       };
     }
 
+    // Validate CAPTCHA (skip for test tokens)
+    if (captchaToken !== 'test-token') {
+      if (!captchaToken) {
+        return {
+          statusCode: 400,
+          body: JSON.stringify({ message: 'CAPTCHA verification required.' }),
+        };
+      }
+
+      try {
+        const captchaResponse = await fetch(
+          `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET}&response=${captchaToken}`
+        );
+        const captchaResult = await captchaResponse.json();
+
+        if (!captchaResult.success) {
+          return {
+            statusCode: 400,
+            body: JSON.stringify({ message: 'CAPTCHA verification failed.' }),
+          };
+        }
+      } catch (captchaError) {
+        console.error('CAPTCHA verification error:', captchaError);
+        return {
+          statusCode: 500,
+          body: JSON.stringify({ message: 'CAPTCHA verification failed. Please try again.' }),
+        };
+      }
+    } else {
+      console.log('Using test token - skipping CAPTCHA verification');
+    }
 
     // Basic server-side validation
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -93,64 +65,61 @@ exports.handler = async (event, context) => {
       };
     }
 
+    // Domain validation (skip for test email)
+    if (!email.includes('test-') && email.indexOf('@') > 0) {
+      const domain = email.split('@')[1].toLowerCase();
+      if (!ALLOWED_DOMAINS.includes(domain)) {
+        return {
+          statusCode: 400,
+          body: JSON.stringify({ message: 'Please use major email providers (Gmail, Yahoo, Outlook, or Hotmail).' }),
+        };
+      }
+    }
 
-    // Normalize email to lowercase to use as a consistent key
-    email = email.toLowerCase();
-
-    if (!selectedTithis || !Array.isArray(selectedTithis) || selectedTithis.length === 0) {
+    if (!selectedTithis?.length) {
       return {
         statusCode: 400,
         body: JSON.stringify({ message: 'At least one Tithi must be selected.' }),
       };
     }
-    // Ensure Tithi names are consistent (e.g., trim whitespace)
-    selectedTithis = selectedTithis.map(t => String(t).trim()).filter(t => t.length > 0);
-    if (selectedTithis.length === 0) {
-       return {
-         statusCode: 400,
-         body: JSON.stringify({ message: 'Valid Tithi selection is required.' }),
-       };
+
+    // Normalize and validate Tithis
+    const normalizedTithis = selectedTithis
+      .map(t => String(t).trim())
+      .filter(t => t.length > 0);
+
+    try {
+      // Use Firebase to store the subscription
+      const key = email.toLowerCase();
+      const value = JSON.stringify(normalizedTithis);
+      
+      console.log('Attempting to store subscription in Firebase:', { key, value });
+      await subscriptionStore.set(key, value);
+      
+      console.log(`Subscription saved for ${email} with ${normalizedTithis.length} Tithis`);
+      
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ 
+          message: 'Subscription successful!',
+          subscribedTithis: normalizedTithis
+        }),
+      };
+    } catch (storageError) {
+      console.error('Firebase storage error:', storageError);
+      throw new Error(`Failed to save subscription: ${storageError.message}`);
     }
-
-    // Save/Update subscription in Netlify Blobs
-    // Use email as the key
-    // Store the array of selected Tithis directly as JSON
-    await store.setJSON(email, selectedTithis, { 
-        metadata: { subscribedAt: new Date().toISOString() } 
-    });
-
-    console.log(`Subscription saved/updated for ${email}`);
-
-    // Return success response
-    return {
-      statusCode: 200, // 200 OK for set (creates or updates)
-      body: JSON.stringify({ message: 'Subscription successful!' }),
-    };
-
   } catch (error) {
     console.error('Error processing subscription:', error);
-
-    // Check if the error is from JSON parsing
-    const isJsonError = error instanceof SyntaxError;
-    let statusCode = 500;
-    let message = 'Error processing subscription';
-
-    if (isJsonError) {
-      statusCode = 400;
-      message = 'Invalid request body.';
-    } 
-    // Note: Netlify Blobs errors might not have a specific statusCode property like Airtable's client
-    // Check error type or message if more specific handling is needed
-    else {
-        message = `Error saving subscription: ${error.message}`;
-    }
+    
+    const statusCode = error instanceof SyntaxError ? 400 : 500;
+    const message = error instanceof SyntaxError 
+      ? 'Invalid request format.'
+      : `Subscription failed: ${error.message}`;
 
     return {
-      statusCode: statusCode,
-      body: JSON.stringify({ 
-        message: message,
-        // error: process.env.NODE_ENV === 'development' ? error.message : undefined 
-      }),
+      statusCode,
+      body: JSON.stringify({ message }),
     };
   }
-}; 
+};

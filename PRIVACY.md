@@ -16,7 +16,7 @@ _Last updated: April 5, 2025_
 
 ## Data Storage
 
-- Data is stored securely using Netlify's infrastructure
+- Data is stored securely using Netlify's infrastructure and Google Firebase. 
 - We use encryption and security best practices to protect your information
 
 ## Your Rights

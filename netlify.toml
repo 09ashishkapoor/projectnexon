@@ -1,36 +1,29 @@
 [build]
-  # No build command needed for simple static site
-  command = ""
-  # Publish the root directory
+  command = "npm test"  # Run tests before deployment
   publish = "."
-  # Directory containing Netlify Functions
   functions = "netlify/functions"
 
-# Redirect rule for the subscribe function
-[[redirects]]
-  from = "/api/subscribe"
-  to = "/.netlify/functions/subscribe"
-  status = 200
-
-# Scheduled function configuration
+# Function configuration
 [functions]
+  # Include external_node_modules to ensure proper packaging
+  external_node_modules = ["firebase-admin", "resend"]
+  node_bundler = "esbuild"
+  
   [functions.sendReminders]
-    # Run daily at 5:00 AM UTC (Adjust as needed)
-    schedule = "0 5 * * *"
-# Scheduled function configuration (Placeholder)
-# Uncomment and adjust cron schedule when sendReminders function is ready
-# [functions]
-#   [functions.sendReminders]
-#     # Example: Run daily at 5:00 AM UTC
-#     schedule = "0 5 * * *"
+    schedule = "0 5 * * *"  # Run daily at 5:00 AM UTC
+
+# Redirect and rewrite rules
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
 
 # Security headers
 [[headers]]
-for = "/*"
-[headers.values]
-  Content-Security-Policy = "default-src 'self'; script-src 'self' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/ 'unsafe-inline'; style-src 'self' 'unsafe-inline'; frame-src https://www.google.com/recaptcha/; connect-src 'self' https://www.google.com/recaptcha/api2/ https://www.gstatic.com/recaptcha/; img-src 'self' data:; font-src 'self'; frame-ancestors 'self';"
-  X-Content-Type-Options = "nosniff"
-  X-Frame-Options = "DENY"
-  Referrer-Policy = "strict-origin-when-cross-origin"
-  Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
-#     schedule = "0 5 * * *" 
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/ 'unsafe-inline'; style-src 'self' 'unsafe-inline'; frame-src https://www.google.com/recaptcha/; connect-src 'self' /.netlify/functions/ https://www.google.com/recaptcha/api2/ https://www.gstatic.com/recaptcha/; img-src 'self' data:; font-src 'self'; frame-ancestors 'self';"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"

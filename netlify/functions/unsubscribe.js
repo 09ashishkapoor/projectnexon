@@ -1,6 +1,4 @@
-const { getStore } = require('@netlify/blobs');
-
-const storeName = 'subscriptions';
+const { subscriptionStore } = require('../../config/firebase');
 
 exports.handler = async (event, context) => {
   const { email } = event.queryStringParameters;
@@ -12,19 +10,9 @@ exports.handler = async (event, context) => {
     };
   }
 
-  let store;
   try {
-    store = getStore(storeName);
-  } catch (setupError) {
-    console.error('Error accessing Blob store:', setupError);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ message: 'Could not access subscription store.' }),
-    };
-  }
-
-  try {
-    await store.delete(email);
+    await subscriptionStore.delete(email.toLowerCase());
+    
     console.log(`Subscription deleted for ${email}`);
     return {
       statusCode: 200,

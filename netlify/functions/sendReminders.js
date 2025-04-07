@@ -1,58 +1,33 @@
 const fs = require('fs');
 const path = require('path');
-const { getStore } = require('@netlify/blobs');
 const { Resend } = require('resend');
+const { subscriptionStore } = require('../../config/firebase');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const fromEmail = process.env.SENDER_EMAIL || 'reminder@yourdomain.com';
-
-const storeName = 'subscriptions';
-const tithiDataPath = path.join(__dirname, 'data', 'tithis_2024_2030.json');
+const BATCH_SIZE = 50;
 
 exports.handler = async (event, context) => {
   console.log('sendReminders function triggered.');
-
-  let store;
+  
   try {
-    store = getStore(storeName);
-  } catch (setupError) {
-    console.error('Error accessing Blob store:', setupError);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ message: 'Could not access subscription store.' }),
-    };
-  }
-
-  try {
-    // 1. Load and parse Tithi data
-    let tithiData = {};
-    try {
-      const rawData = fs.readFileSync(tithiDataPath, 'utf8');
-      tithiData = JSON.parse(rawData);
-      console.log('Successfully loaded Tithi data.');
-    } catch (err) {
-      console.error('Error loading or parsing Tithi data:', err);
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ message: 'Failed to load Tithi data.' }),
-      };
-    }
-
-    // 2. Determine target date
+    // Load and parse Tithi data
+    const tithiDataPath = path.join(__dirname, '../../tithis_2024_2030.json');
+    const tithiData = JSON.parse(fs.readFileSync(tithiDataPath, 'utf8'));
+    
+    // Determine target date
     const leadDays = parseInt(process.env.REMINDER_LEAD_DAYS || '2', 10);
-    const today = new Date();
-    const targetDate = new Date(today);
-    targetDate.setUTCDate(today.getUTCDate() + leadDays);
-    const targetYear = targetDate.getUTCFullYear();
+    const targetDate = new Date();
+    targetDate.setUTCDate(targetDate.getUTCDate() + leadDays);
     const targetDateString = targetDate.toISOString().split('T')[0];
+    const targetYear = targetDate.getUTCFullYear();
 
-    console.log(`Checking for Tithis on target date: ${targetDateString} (${leadDays} days from now)`);
+    console.log(`Checking Tithis for ${targetDateString} (${leadDays} days ahead)`);
 
-    // 3. Filter Tithis for the target date
+    // Find upcoming Tithis
     const upcomingTithis = [];
     if (tithiData[targetYear]) {
-      for (const tithiName in tithiData[targetYear]) {
-        const dates = tithiData[targetYear][tithiName];
+      for (const [tithiName, dates] of Object.entries(tithiData[targetYear])) {
         for (const entry of dates) {
           if (entry.date === targetDateString) {
             upcomingTithis.push({
@@ -65,117 +40,91 @@ exports.handler = async (event, context) => {
       }
     }
 
-    if (upcomingTithis.length === 0) {
-      console.log(`No Tithis found for target date ${targetDateString}. Exiting.`);
+    if (!upcomingTithis.length) {
       return {
         statusCode: 200,
         body: JSON.stringify({ message: 'No Tithis found for target date.' }),
       };
     }
 
-    const upcomingTithiNames = upcomingTithis.map(t => t.name);
-    console.log(`Found ${upcomingTithis.length} Tithis for ${targetDateString}:`, upcomingTithis.map(t => t.fullName));
+    // Get all subscriber keys from Firebase
+    const subscriberKeys = await subscriptionStore.list();
+    console.log(`Found ${subscriberKeys.length} total subscribers`);
 
-    // 4. Fetch subscribers from Netlify Blobs
-    const subscribersToSend = [];
-    try {
-      console.log('Fetching subscribers from Netlify Blobs...');
-      const keys = await store.list();
-      console.log(`Fetched ${keys.length} subscriber keys.`);
+    const subscribersToNotify = [];
+    
+    // Process subscribers in batches
+    for (let i = 0; i < subscriberKeys.length; i += BATCH_SIZE) {
+      const batch = subscriberKeys.slice(i, i + BATCH_SIZE);
+      const batchResults = await Promise.all(
+        batch.map(async (email) => {
+          try {
+            const tithiData = await subscriptionStore.get(email);
+            if (!tithiData) return null;
+            
+            const tithiList = JSON.parse(tithiData);
+            if (!Array.isArray(tithiList)) return null;
 
-      for (const email of keys) {
-        const tithiList = await store.get(email, { type: 'json' });
-        if (!Array.isArray(tithiList)) continue;
+            const matchingTithis = upcomingTithis.filter(t => 
+              tithiList.includes(t.name)
+            );
 
-        const relevantTithis = upcomingTithis.filter(upcoming =>
-          tithiList.includes(upcoming.name)
-        );
+            return matchingTithis.length ? { email, tithis: matchingTithis } : null;
+          } catch (error) {
+            console.error(`Error processing subscriber ${email}:`, error);
+            return null;
+          }
+        })
+      );
 
-        if (relevantTithis.length > 0) {
-          subscribersToSend.push({
-            email,
-            tithis: relevantTithis,
-          });
-        }
-      }
-    } catch (blobError) {
-      console.error('Error fetching or processing Blob data:', blobError);
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ message: 'Failed to fetch or process subscriber data.' }),
-      };
+      subscribersToNotify.push(...batchResults.filter(Boolean));
     }
 
-    if (subscribersToSend.length === 0) {
-      console.log('No subscribers found for the upcoming Tithis.');
+    if (!subscribersToNotify.length) {
       return {
         statusCode: 200,
-        body: JSON.stringify({ message: 'No subscribers for upcoming Tithis.' }),
+        body: JSON.stringify({ message: 'No subscribers found for upcoming Tithis.' }),
       };
     }
 
-    console.log(`Found ${subscribersToSend.length} subscribers to notify.`);
+    // Send emails
+    console.log(`Sending notifications to ${subscribersToNotify.length} subscribers`);
+    
+    const emailResults = await Promise.allSettled(
+      subscribersToNotify.map(async ({ email, tithis }) => {
+        const tithiListString = tithis
+          .map(t => `- ${t.fullName} (${t.name}) on ${t.date}`)
+          .join('\n');
 
-    // 5. Prepare and send emails using Resend
-    console.log(`Attempting to send ${subscribersToSend.length} emails via Resend...`);
-    const emailPromises = [];
-    let successfulSends = 0;
-    let failedSends = 0;
+        const emailData = {
+          from: fromEmail,
+          to: email,
+          subject: `Upcoming Tithi Reminder for ${targetDateString}`,
+          html: `
+            <p>Namaskar,</p>
+            <p>This is a reminder for the following Tithi(s) occurring in ${leadDays} day(s) on <strong>${targetDateString}</strong>:</p>
+            <pre>${tithiListString}</pre>
+            <p>Regards,</p>
+            <p>Your Tithi Reminder Service</p>
+            <p style="font-size:0.8em; color:#777;">
+              <a href="/.netlify/functions/unsubscribe?email=${email}" style="color:#777;">Unsubscribe</a>
+            </p>
+          `
+        };
 
-    if (!process.env.RESEND_API_KEY) {
-      console.error('FATAL: RESEND_API_KEY environment variable not set.');
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ message: 'Resend API key is not configured.' }),
-      };
-    }
+        return resend.emails.send(emailData);
+      })
+    );
 
-    for (const subscriber of subscribersToSend) {
-      const { email, tithis } = subscriber;
-      const tithiListString = tithis.map(t => `- ${t.fullName} (${t.name}) on ${t.date}`).join('\n');
-
-      const subject = `Upcoming Tithi Reminder for ${targetDateString}`;
-      const bodyHtml = `
-        <p>Namaskar,</p>
-        <p>This is a reminder for the following Tithi(s) occurring in ${leadDays} day(s) on <strong>${targetDateString}</strong>:</p>
-        <pre>${tithiListString}</pre>
-        <p>Regards,</p>
-        <p>Your Tithi Reminder Service</p>
-        <p style="font-size:0.8em; color:#777;">
-          <a href="/.netlify/functions/unsubscribe?email=${email}" style="color:#777;">Unsubscribe</a>
-        </p>
-      `;
-
-      const emailData = {
-        from: fromEmail,
-        to: email,
-        subject: subject,
-        html: bodyHtml,
-      };
-
-      emailPromises.push(
-        resend.emails.send(emailData)
-          .then(response => {
-            console.log(`Email sent successfully to ${email} for Tithis: ${tithis.map(t => t.name).join(', ')}. ID: ${response.id}`);
-            successfulSends++;
-          })
-          .catch(error => {
-            console.error(`Failed to send email to ${email}:`, error);
-            failedSends++;
-          })
-      );
-    }
-
-    await Promise.allSettled(emailPromises);
-
-    console.log(`Email sending process completed. Successful: ${successfulSends}, Failed: ${failedSends}`);
-
-    const finalStatusCode = failedSends > 0 ? 500 : 200;
-    const finalMessage = `Reminder process complete. Emails sent: ${successfulSends}. Failures: ${failedSends}.`;
+    const successCount = emailResults.filter(r => r.status === 'fulfilled').length;
+    const failureCount = emailResults.filter(r => r.status === 'rejected').length;
 
     return {
-      statusCode: finalStatusCode,
-      body: JSON.stringify({ message: finalMessage }),
+      statusCode: failureCount ? 500 : 200,
+      body: JSON.stringify({
+        message: `Reminder process complete. Successful: ${successCount}, Failed: ${failureCount}`,
+        totalSubscribers: subscribersToNotify.length
+      }),
     };
 
   } catch (error) {
@@ -184,7 +133,7 @@ exports.handler = async (event, context) => {
       statusCode: 500,
       body: JSON.stringify({
         message: 'Error processing reminders',
-        error: error.message,
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
       }),
     };
   }

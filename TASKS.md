@@ -98,3 +98,4 @@ This document outlines the specific development tasks required to build the Tith
 ## Documentation Updates
 
 - 2025-04-05: Updated `PLANNING.md` to include detailed implementation phases aligned with this task list.
+- 2025-04-05: Created `SETUP_BLOBS.md` and `.env.example` to document Blob storage configuration requirements after discovering missing environment variables (NETLIFY_SITE_ID, NETLIFY_BLOBS_TOKEN).
