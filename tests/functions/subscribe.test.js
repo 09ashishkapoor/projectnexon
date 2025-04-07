@@ -23,7 +23,13 @@ describe('subscribe function', () => {
   };
 
   it('should return 200 on successful subscription with valid CAPTCHA and domain', async () => {
-    const mockResponse = { success: true };
+    // Mock a successful reCAPTCHA v3 response with proper score and action
+    const mockResponse = { 
+      success: true, 
+      score: 0.9, 
+      action: 'submit' 
+    };
+    
     fetch.default.mockResolvedValueOnce({
       ok: true,
       json: () => Promise.resolve(mockResponse),
@@ -76,7 +82,13 @@ describe('subscribe function', () => {
   });
 
   it('should return 400 for disallowed email domain', async () => {
-    const mockResponse = { success: true };
+    // Make sure to include a valid reCAPTCHA v3 response with score and action
+    const mockResponse = { 
+      success: true, 
+      score: 0.9, 
+      action: 'submit' 
+    };
+    
     fetch.default.mockResolvedValueOnce({
       ok: true,
       json: () => Promise.resolve(mockResponse),
