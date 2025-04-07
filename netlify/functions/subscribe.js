@@ -2,6 +2,7 @@ const fetch = require('node-fetch');
 const { subscriptionStore } = require('../../config/firebase');
 
 const ALLOWED_DOMAINS = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com'];
+const RECAPTCHA_SCORE_THRESHOLD = 0.5; // Minimum score to accept (0.0 to 1.0)
 
 exports.handler = async (event, context) => {
   if (event.httpMethod !== 'POST') {
@@ -35,17 +36,45 @@ exports.handler = async (event, context) => {
       }
 
       try {
+        // ReCAPTCHA v3 verification
         const captchaResponse = await fetch(
           `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET}&response=${captchaToken}`
         );
         const captchaResult = await captchaResponse.json();
 
+        console.log('reCAPTCHA verification result:', JSON.stringify(captchaResult));
+
         if (!captchaResult.success) {
           return {
             statusCode: 400,
-            body: JSON.stringify({ message: 'CAPTCHA verification failed.' }),
+            body: JSON.stringify({ 
+              message: 'CAPTCHA verification failed.',
+              details: captchaResult['error-codes'] || 'Unknown error'
+            }),
           };
         }
+
+        // Check the score for v3 reCAPTCHA
+        if (captchaResult.score < RECAPTCHA_SCORE_THRESHOLD) {
+          console.log(`Low reCAPTCHA score: ${captchaResult.score}`);
+          return {
+            statusCode: 400,
+            body: JSON.stringify({ 
+              message: 'Our system flagged this submission as potentially automated. Please try again later.',
+              score: captchaResult.score
+            }),
+          };
+        }
+        
+        // Verify action matches
+        if (captchaResult.action !== 'submit') {
+          console.log(`Invalid reCAPTCHA action: ${captchaResult.action}`);
+          return {
+            statusCode: 400,
+            body: JSON.stringify({ message: 'Invalid verification action.' }),
+          };
+        }
+        
       } catch (captchaError) {
         console.error('CAPTCHA verification error:', captchaError);
         return {

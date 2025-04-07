@@ -63,6 +63,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Handle form submission
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    
+    // Disable the submit button to prevent multiple submissions
+    submitButton.disabled = true;
+    submitButton.textContent = 'Processing...';
 
     const emailInput = document.getElementById('email');
     const email = emailInput.value.trim();
@@ -73,45 +77,61 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const honeypot = document.getElementById('website').value;
     
-    // Get the reCAPTCHA response token
-    const captchaToken = grecaptcha ? grecaptcha.getResponse() : '';
-    
-    if (!captchaToken) {
-      alert('Please complete the CAPTCHA verification.');
-      return;
-    }
-
-    const payload = {
-      email,
-      selectedTithis,
-      website: honeypot,
-      'g-recaptcha-response': captchaToken
-    };
-
+    // Execute reCAPTCHA v3
     try {
-      const response = await fetch('/.netlify/functions/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+      grecaptcha.ready(function() {
+        grecaptcha.execute('6LdohQsrAAAAAKUe4KxI-3Jf2hxYREvgqeD9ZZUo', {action: 'submit'})
+          .then(async function(token) {
+            // Add token to form
+            document.getElementById('g-recaptcha-response').value = token;
+            
+            // Prepare payload with the reCAPTCHA token
+            const payload = {
+              email,
+              selectedTithis,
+              website: honeypot,
+              'g-recaptcha-response': token
+            };
+            
+            try {
+              const response = await fetch('/.netlify/functions/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+              });
+
+              const data = await response.json();
+
+              console.log('Subscribe response:', data);
+
+              if (data && data.message) {
+                alert(data.message);
+              } else {
+                alert('Subscription response received, but no message provided.');
+              }
+
+              if (response.ok) {
+                localStorage.setItem('tithi_submitted', 'true');
+                form.innerHTML = '<p style="color:#ff3b3b; text-align:center;">Thank you! You have successfully subscribed.</p>';
+              } else {
+                // Re-enable the submit button if there was an error
+                submitButton.disabled = false;
+                submitButton.textContent = 'Subscribe';
+              }
+            } catch (error) {
+              console.error('Error submitting form:', error);
+              alert('An error occurred. Please try again.');
+              // Re-enable the submit button
+              submitButton.disabled = false;
+              submitButton.textContent = 'Subscribe';
+            }
+          });
       });
-
-      const data = await response.json();
-
-      console.log('Subscribe response:', data);
-
-      if (data && data.message) {
-        alert(data.message);
-      } else {
-        alert('Subscription response received, but no message provided.');
-      }
-
-      if (response.ok) {
-        localStorage.setItem('tithi_submitted', 'true');
-        form.innerHTML = '<p style="color:#ff3b3b; text-align:center;">Thank you! You have successfully subscribed.</p>';
-      }
     } catch (error) {
-      console.error('Error submitting form:', error);
-      alert('An error occurred. Please try again.');
+      console.error('reCAPTCHA error:', error);
+      alert('Error with verification system. Please try again later.');
+      submitButton.disabled = false;
+      submitButton.textContent = 'Subscribe';
     }
   });
 });
