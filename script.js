@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const tithiContainer = document.getElementById('tithi-checkboxes');
   const form = document.getElementById('subscription-form');
   const submitButton = document.getElementById('submit-button');
+  const messageArea = document.getElementById('message-area');
 
   // Check if user already submitted
   if (localStorage.getItem('tithi_submitted') === 'true') {
@@ -64,9 +65,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
+    // Clear previous messages
+    messageArea.innerHTML = '';
+    messageArea.className = 'message-area';
+    
     // Disable the submit button to prevent multiple submissions
     submitButton.disabled = true;
-    submitButton.textContent = 'Processing...';
+    submitButton.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...';
 
     const emailInput = document.getElementById('email');
     const email = emailInput.value.trim();
@@ -102,36 +107,52 @@ document.addEventListener('DOMContentLoaded', async () => {
 
               const data = await response.json();
 
-              console.log('Subscribe response:', data);
-
-              if (data && data.message) {
-                alert(data.message);
-              } else {
-                alert('Subscription response received, but no message provided.');
-              }
-
               if (response.ok) {
+                messageArea.textContent = data.message;
+                messageArea.className = 'message-area success';
+                
                 localStorage.setItem('tithi_submitted', 'true');
-                form.innerHTML = '<p style="color:#ff3b3b; text-align:center;">Thank you! You have successfully subscribed.</p>';
+                
+                // Replace form with success message
+                form.innerHTML = `
+                  <div style="text-align: center;">
+                    <i class="fas fa-check-circle" style="font-size: 3rem; color: #4caf50; margin-bottom: 1rem;"></i>
+                    <h3>Subscription Successful!</h3>
+                    <p>Thank you for subscribing to Tithi Reminders.</p>
+                    <p>A confirmation email has been sent to <strong>${email}</strong>.</p>
+                    <p>Please check your inbox (and spam folder) for details.</p>
+                  </div>
+                `;
               } else {
-                // Re-enable the submit button if there was an error
+                // Show error message
+                messageArea.textContent = data.message || 'Subscription failed. Please try again.';
+                messageArea.className = 'message-area error';
+                
+                // Re-enable the submit button
                 submitButton.disabled = false;
-                submitButton.textContent = 'Subscribe';
+                submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Subscribe';
               }
             } catch (error) {
               console.error('Error submitting form:', error);
-              alert('An error occurred. Please try again.');
+              
+              messageArea.textContent = 'An unexpected error occurred. Please try again later.';
+              messageArea.className = 'message-area error';
+              
               // Re-enable the submit button
               submitButton.disabled = false;
-              submitButton.textContent = 'Subscribe';
+              submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Subscribe';
             }
           });
       });
     } catch (error) {
       console.error('reCAPTCHA error:', error);
-      alert('Error with verification system. Please try again later.');
+      
+      messageArea.textContent = 'Error with verification system. Please try again later.';
+      messageArea.className = 'message-area error';
+      
+      // Re-enable the submit button
       submitButton.disabled = false;
-      submitButton.textContent = 'Subscribe';
+      submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Subscribe';
     }
   });
 });

@@ -5,11 +5,25 @@ jest.mock('../../config/firebase', () => require('../../config/firebase.test'));
 jest.mock('node-fetch');
 const fetch = require('node-fetch');
 
+// Mock Resend for testing email sending
+jest.mock('resend', () => {
+  const mockSend = jest.fn().mockResolvedValue({ id: 'mock-email-id' });
+  return {
+    Resend: jest.fn().mockImplementation(() => ({
+      emails: {
+        send: mockSend
+      }
+    }))
+  };
+});
+
 const { handler } = require('../../netlify/functions/subscribe');
 
 describe('subscribe function', () => {
   beforeEach(() => {
     process.env.RECAPTCHA_SECRET = 'dummy_secret';
+    process.env.RESEND_API_KEY = 'dummy_resend_key';
+    process.env.SENDER_EMAIL = 'test@example.com';
     jest.clearAllMocks();
   });
 
@@ -45,6 +59,8 @@ describe('subscribe function', () => {
     };
     const response = await handler(event);
     expect(response.statusCode).toBe(200);
+    // Check that the success message includes confirmation email notification
+    expect(JSON.parse(response.body).message).toContain('confirmation email');
   });
 
   it('should return 400 if CAPTCHA token is missing', async () => {
