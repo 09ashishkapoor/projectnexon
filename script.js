@@ -72,11 +72,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     ).map(cb => cb.value);
 
     const honeypot = document.getElementById('website').value;
+    
+    // Get the reCAPTCHA response token
+    const captchaToken = grecaptcha ? grecaptcha.getResponse() : '';
+    
+    if (!captchaToken) {
+      alert('Please complete the CAPTCHA verification.');
+      return;
+    }
 
     const payload = {
       email,
       selectedTithis,
-      website: honeypot
+      website: honeypot,
+      'g-recaptcha-response': captchaToken
     };
 
     try {

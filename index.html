@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tithi Reminders</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Add Google reCAPTCHA script -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
     <div class="container">
@@ -39,6 +41,12 @@
                     <p>Loading Tithis...</p>
                 </div>
                 <small>Check at least one Tithi.</small>
+            </div>
+
+            <!-- Add reCAPTCHA -->
+            <div class="form-group">
+                <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
+                <small>Please complete the CAPTCHA.</small>
             </div>
 
             <button type="submit" id="submit-button">Subscribe</button>
