@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', async () => {
-  const yearSelect = document.getElementById('year-select');
   const tithiContainer = document.getElementById('tithi-checkboxes');
   const form = document.getElementById('subscription-form');
   const submitButton = document.getElementById('submit-button');
@@ -11,29 +10,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  // Populate year dropdown with current year and next year
-  const currentYear = new Date().getFullYear();
-  [currentYear, currentYear + 1].forEach(year => {
-    const option = document.createElement('option');
-    option.value = year;
-    option.textContent = year;
-    yearSelect.appendChild(option);
-  });
-
-  async function loadTithisForYear(year) {
+  async function loadAllTithis() {
     tithiContainer.innerHTML = '<p>Loading Tithis...</p>';
     try {
       const response = await fetch('tithis_2024_2030_basic.json');
       const data = await response.json();
 
-      const yearData = data[year];
-      if (!yearData) {
-        tithiContainer.innerHTML = '<p>No Tithi data for selected year.</p>';
-        return;
-      }
+      // Get unique tithis across all years
+      const allTithis = new Set();
+      Object.values(data).forEach(yearData => {
+        Object.keys(yearData).forEach(tithi => {
+          allTithis.add(tithi);
+        });
+      });
 
-      const tithiList = Object.keys(yearData).sort();
-
+      const tithiList = Array.from(allTithis).sort();
       tithiContainer.innerHTML = '';
 
       tithiList.forEach(tithi => {
@@ -53,13 +44,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // Initial load for current year
-  loadTithisForYear(currentYear);
-
-  // Reload Tithis when year changes
-  yearSelect.addEventListener('change', () => {
-    loadTithisForYear(yearSelect.value);
-  });
+  // Load all tithis
+  loadAllTithis();
 
   // Handle form submission
   form.addEventListener('submit', async (e) => {
@@ -121,6 +107,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <p>Thank you for subscribing to Tithi Reminders.</p>
                     <p>A confirmation email has been sent to <strong>${email}</strong>.</p>
                     <p>Please check your inbox (and spam folder) for details.</p>
+                    <p>You will receive notifications for your selected Tithis until 2030.</p>
+                    <p class="github-link">This project is open source. <a href="https://github.com/yourusername/ProjectNexon" target="_blank">View on GitHub</a></p>
                   </div>
                 `;
               } else {
