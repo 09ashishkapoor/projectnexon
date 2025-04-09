@@ -5,24 +5,14 @@ jest.mock('../../config/firebase', () => require('../../config/firebase.test'));
 jest.mock('node-fetch');
 const fetch = require('node-fetch');
 
-// Mock Resend for testing email sending
-jest.mock('resend', () => {
-  const mockSend = jest.fn().mockResolvedValue({ id: 'mock-email-id' });
-  return {
-    Resend: jest.fn().mockImplementation(() => ({
-      emails: {
-        send: mockSend
-      }
-    }))
-  };
-});
+// The subscribe function uses fetch directly to call Brevo API, so no need to mock a Brevo SDK
 
 const { handler } = require('../../netlify/functions/subscribe');
 
 describe('subscribe function', () => {
   beforeEach(() => {
     process.env.RECAPTCHA_SECRET = 'dummy_secret';
-    process.env.RESEND_API_KEY = 'dummy_resend_key';
+    process.env.BREVO_API_KEY = 'dummy_brevo_key';
     process.env.SENDER_EMAIL = 'test@example.com';
     jest.clearAllMocks();
   });
@@ -38,15 +28,28 @@ describe('subscribe function', () => {
 
   it('should return 200 on successful subscription with valid CAPTCHA and domain', async () => {
     // Mock a successful reCAPTCHA v3 response with proper score and action
-    const mockResponse = { 
-      success: true, 
-      score: 0.9, 
-      action: 'submit' 
-    };
-    
-    fetch.default.mockResolvedValueOnce({
-      ok: true,
-      json: () => Promise.resolve(mockResponse),
+    fetch.default.mockImplementation((url, options) => {
+      // Mock reCAPTCHA response
+      if (url.includes('google.com/recaptcha')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ 
+            success: true, 
+            score: 0.9, 
+            action: 'submit' 
+          }),
+        });
+      }
+      
+      // Mock Brevo API response for email
+      if (url.includes('api.brevo.com')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ messageId: 'mock-email-id' }),
+        });
+      }
+      
+      return Promise.reject(new Error('Unknown fetch call'));
     });
 
     const event = {
@@ -78,10 +81,9 @@ describe('subscribe function', () => {
   });
 
   it('should return 400 if CAPTCHA verification fails', async () => {
-    const mockResponse = { success: false };
     fetch.default.mockResolvedValueOnce({
       ok: true,
-      json: () => Promise.resolve(mockResponse),
+      json: () => Promise.resolve({ success: false }),
     });
 
     const event = {
@@ -99,15 +101,13 @@ describe('subscribe function', () => {
 
   it('should return 400 for disallowed email domain', async () => {
     // Make sure to include a valid reCAPTCHA v3 response with score and action
-    const mockResponse = { 
-      success: true, 
-      score: 0.9, 
-      action: 'submit' 
-    };
-    
     fetch.default.mockResolvedValueOnce({
       ok: true,
-      json: () => Promise.resolve(mockResponse),
+      json: () => Promise.resolve({ 
+        success: true, 
+        score: 0.9, 
+        action: 'submit' 
+      }),
     });
 
     const event = {

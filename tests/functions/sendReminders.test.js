@@ -1,4 +1,4 @@
-process.env.RESEND_API_KEY = 'test-api-key';
+process.env.BREVO_API_KEY = 'test-api-key';
 process.env.SENDER_EMAIL = 'test@sender.com';
 
 // Mock Firebase instead of Netlify Blobs
@@ -11,13 +11,25 @@ jest.mock('../../config/firebase', () => {
   };
 });
 
-jest.mock('resend', () => {
+// Mock Brevo SDK
+jest.mock('@getbrevo/brevo', () => {
+  const mockSendTransacEmail = jest.fn().mockResolvedValue({ messageId: 'mock-email-id' });
+  
   return {
-    Resend: jest.fn().mockImplementation(() => ({
-      emails: {
-        send: jest.fn().mockResolvedValue({ id: 'mock-email-id' }),
-      },
+    TransactionalEmailsApi: jest.fn().mockImplementation(() => ({
+      sendTransacEmail: mockSendTransacEmail,
+      authentications: {
+        'apiKey': {
+          apiKey: null
+        }
+      }
     })),
+    SendSmtpEmail: jest.fn().mockImplementation(() => ({
+      subject: null,
+      htmlContent: null,
+      sender: null,
+      to: null
+    }))
   };
 });
 
