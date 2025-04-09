@@ -1,13 +1,13 @@
 const fetch = require('node-fetch');
 const { subscriptionStore } = require('../../config/firebase');
-const { Resend } = require('resend');
 
 const ALLOWED_DOMAINS = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com'];
 const RECAPTCHA_SCORE_THRESHOLD = 0.5; // Minimum score to accept (0.0 to 1.0)
 
-// Initialize Resend for sending emails
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Brevo email configuration
+const brevoApiKey = process.env.BREVO_API_KEY;
 const fromEmail = process.env.SENDER_EMAIL || 'notifications@tithireminders.com';
+const senderName = process.env.SENDER_NAME || 'Tithi Reminders';
 
 exports.handler = async (event, context) => {
   if (event.httpMethod !== 'POST') {
@@ -146,12 +146,22 @@ exports.handler = async (event, context) => {
           day: 'numeric'
         });
         
-        // Send the confirmation email
-        const emailResponse = await resend.emails.send({
-          from: fromEmail,
-          to: email,
-          subject: 'Your Tithi Reminders Subscription Confirmation',
-          html: `
+        // Send confirmation email via Brevo API
+        const emailResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
+          method: 'POST',
+          headers: {
+            'accept': 'application/json',
+            'api-key': brevoApiKey,
+            'content-type': 'application/json'
+          },
+          body: JSON.stringify({
+            sender: {
+              email: fromEmail,
+              name: senderName
+            },
+            to: [{ email }],
+            subject: 'Your Tithi Reminders Subscription Confirmation',
+            htmlContent: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
               <div style="background: linear-gradient(90deg, #ff3b3b, #ff6b6b); height: 5px; width: 100%;"></div>
               <div style="padding: 20px; background-color: #f9f9f9; border-radius: 0 0 5px 5px;">
@@ -181,9 +191,11 @@ exports.handler = async (event, context) => {
               </div>
             </div>
           `
+          })
         });
         
-        console.log('Confirmation email sent successfully:', emailResponse.id);
+        const emailResult = await emailResponse.json();
+        console.log('Confirmation email sent successfully:', emailResult.messageId);
         
       } catch (emailError) {
         // Log the error but don't fail the subscription process

@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function loadTithisForYear(year) {
     tithiContainer.innerHTML = '<p>Loading Tithis...</p>';
     try {
-      const response = await fetch('tithis_2024_2030.json');
+      const response = await fetch('tithis_2024_2030_basic.json');
       const data = await response.json();
 
       const yearData = data[year];

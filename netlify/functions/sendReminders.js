@@ -1,10 +1,15 @@
 const fs = require('fs');
 const path = require('path');
-const { Resend } = require('resend');
+const SibApiV3Sdk = require('@getbrevo/brevo');
 const { subscriptionStore } = require('../../config/firebase');
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Brevo API instance
+const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+const apiKey = apiInstance.authentications['apiKey'];
+apiKey.apiKey = process.env.BREVO_API_KEY;
+
 const fromEmail = process.env.SENDER_EMAIL || 'reminder@yourdomain.com';
+const fromName = process.env.SENDER_NAME || 'Tithi Reminder';
 const BATCH_SIZE = 50;
 
 exports.handler = async (event, context) => {
@@ -12,7 +17,7 @@ exports.handler = async (event, context) => {
   
   try {
     // Load and parse Tithi data
-    const tithiDataPath = path.join(__dirname, '../../tithis_2024_2030.json');
+    const tithiDataPath = path.join(__dirname, '../../tithis_2024_2030_basic.json');
     const tithiData = JSON.parse(fs.readFileSync(tithiDataPath, 'utf8'));
     
     // Determine target date
@@ -96,23 +101,32 @@ exports.handler = async (event, context) => {
           .map(t => `- ${t.fullName} (${t.name}) on ${t.date}`)
           .join('\n');
 
-        const emailData = {
-          from: fromEmail,
-          to: email,
-          subject: `Upcoming Tithi Reminder for ${targetDateString}`,
-          html: `
-            <p>Namaskar,</p>
-            <p>This is a reminder for the following Tithi(s) occurring in ${leadDays} day(s) on <strong>${targetDateString}</strong>:</p>
-            <pre>${tithiListString}</pre>
-            <p>Regards,</p>
-            <p>Your Tithi Reminder Service</p>
-            <p style="font-size:0.8em; color:#777;">
-              <a href="/.netlify/functions/unsubscribe?email=${email}" style="color:#777;">Unsubscribe</a>
-            </p>
-          `
+        // Create Brevo email send request
+        const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+        
+        sendSmtpEmail.subject = `Upcoming Tithi Reminder for ${targetDateString}`;
+        sendSmtpEmail.htmlContent = `
+          <p>Namaskar,</p>
+          <p>This is a reminder for the following Tithi(s) occurring in ${leadDays} day(s) on <strong>${targetDateString}</strong>:</p>
+          <pre>${tithiListString}</pre>
+          <p>Regards,</p>
+          <p>Your Tithi Reminder Service</p>
+          <p style="font-size:0.8em; color:#777;">
+            <a href="/.netlify/functions/unsubscribe?email=${email}" style="color:#777;">Unsubscribe</a>
+          </p>
+        `;
+        
+        sendSmtpEmail.sender = {
+          name: fromName,
+          email: fromEmail
         };
+        
+        sendSmtpEmail.to = [{
+          email: email
+        }];
 
-        return resend.emails.send(emailData);
+        // Send email using Brevo
+        return apiInstance.sendTransacEmail(sendSmtpEmail);
       })
     );
 

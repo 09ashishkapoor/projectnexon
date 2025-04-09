@@ -1,6 +1,6 @@
 # Tithi Reminder System - Development Tasks (Netlify Approach)
 
-This document outlines the specific development tasks required to build the Tithi Reminder System using Netlify, static HTML, Netlify Blobs, and Resend.
+This document outlines the specific development tasks required to build the Tithi Reminder System using Netlify, static HTML, Netlify Blobs, and Brevo.
 
 ## Phase 1: Setup & Configuration (Week 1)
 
@@ -9,11 +9,11 @@ This document outlines the specific development tasks required to build the Tith
 -   [X] Create a new site on Netlify and connect it to the Git repository. (User action)
 -   [X] Enable Netlify Blobs for the site (User action - via Netlify UI or `netlify link` + `netlify labs:enable netlify_blobs`). **(New)**
 -   [X] Define Blob store name (e.g., `subscriptions`) and ensure functions have necessary access permissions (usually automatic if Blobs enabled). **(New)**
--   [X] Set up a Resend account and obtain an API key. (User action)
--   [X] Add Resend API key (`RESEND_API_KEY`) and sender email (`SENDER_EMAIL`) to Netlify Environment Variables. (User action)
+-   [X] Set up a Brevo account and obtain an API key. (User action)
+-   [X] Add Brevo API key (`BREVO_API_KEY`) and sender email (`SENDER_EMAIL`) to Netlify Environment Variables. (User action)
 -   [X] Add `REMINDER_LEAD_DAYS` (optional, defaults to 2) to Netlify Environment Variables. (User action)
 -   [X] Add your `tithis_2024_2030.json` file to the project (e.g., in `netlify/functions/data/`). 
--   [X] Install necessary Node.js dependencies for functions (`@netlify/blobs`, `resend`). Update `package.json`.
+-   [X] Install necessary Node.js dependencies for functions (`@netlify/blobs`). Update `package.json`.
 -   [X] Create `netlify.toml` for configuration.
 -   [X] Create documentation placeholders (`PLANNING.md`, `README.md`, etc.).
 -   [X] Create `.gitignore`.
@@ -59,7 +59,7 @@ This document outlines the specific development tasks required to build the Tith
     -   [X] Compare the subscriber's Tithis with the `upcomingTithis` identified earlier.
     -   [X] Filter/collect subscribers who need reminders for the specific Tithis.
     -   [X] Define the email template content.
-    -   [X] Integrate with the Resend API client to send emails.
+    -   [X] Integrate with the Brevo API to send emails.
     -   [X] Handle errors and logging.
 
 ## Phase 4: Scheduled Function & Deployment (Week 4)
@@ -68,7 +68,7 @@ This document outlines the specific development tasks required to build the Tith
     -   [X] Function created.
     -   [X] Core logic implemented (Tithi loading, date calc, filtering).
     -   [X] **Airtable querying logic replaced with Netlify Blobs logic.**
-    -   [X] Resend integration implemented.
+    -   [X] Brevo integration implemented.
     -   [X] Error handling and logging in place.
 -   [ ] **Configure Cron Trigger:**
     -   [X] Update `netlify.toml` with schedule for `sendReminders`.
@@ -76,13 +76,13 @@ This document outlines the specific development tasks required to build the Tith
     -   [X] Test the subscription form end-to-end locally (`netlify dev`).
     -   [X] Test the `subscribe` function response and verify data saved correctly in Netlify Blobs (using local dev tools or checking logs/Netlify UI after deployment).
     -   [X] Test the `sendReminders` function logic locally, verifying it retrieves data from Blobs and identifies correct recipients.
-    -   [X] Trigger a test email send via Resend.
+    -   [X] Trigger a test email send via Brevo.
     -   [X] Test deployed version's form and API.
     -   [X] Monitor the first few scheduled runs on Netlify, check Blob store access logs (if available) and function logs.
     -   [X] Implement comprehensive unit tests for backend functions and frontend form (2025-04-05)
 -   [ ] **Deployment:**
     -   [ ] Ensure all necessary code is pushed to the main branch on Git.
-    -   [ ] Verify required Environment Variables (`RESEND_API_KEY`, `SENDER_EMAIL`, `REMINDER_LEAD_DAYS`) are set in Netlify UI.
+    -   [ ] Verify required Environment Variables (`BREVO_API_KEY`, `SENDER_EMAIL`, `REMINDER_LEAD_DAYS`) are set in Netlify UI.
     -   [ ] Ensure Netlify Blobs is enabled for the site.
     -   [ ] Monitor the build/deploy logs.
 
@@ -99,3 +99,4 @@ This document outlines the specific development tasks required to build the Tith
 
 - 2025-04-05: Updated `PLANNING.md` to include detailed implementation phases aligned with this task list.
 - 2025-04-05: Created `SETUP_BLOBS.md` and `.env.example` to document Blob storage configuration requirements after discovering missing environment variables (NETLIFY_SITE_ID, NETLIFY_BLOBS_TOKEN).
+- 2025-04-07: Created `SETUP_BREVO.md` to document Brevo email service configuration after switching from Resend.
