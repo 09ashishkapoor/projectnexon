@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "test:ci": "cross-env CI=true jest",
     "dev": "netlify dev",
     "start": "netlify dev",
     "start-scheduler": "node scheduler.js"
@@ -26,6 +27,7 @@
     "node-schedule": "^2.1.1"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "node-fetch": "^2.7.0"

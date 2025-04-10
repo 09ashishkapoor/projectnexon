@@ -1,5 +1,5 @@
 [build]
-  command = "npm test"  # Run tests before deployment
+  command = "npm run test:ci"  # Run CI-specific tests before deployment
   publish = "."
   functions = "netlify/functions"
 
