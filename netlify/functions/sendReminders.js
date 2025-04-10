@@ -152,3 +152,8 @@ exports.handler = async (event, context) => {
     };
   }
 };
+
+// Export schedule configuration
+exports.config = {
+  schedule: "0 5 * * *" // run at 5:00 AM UTC daily
+};

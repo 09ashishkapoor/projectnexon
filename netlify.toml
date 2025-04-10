@@ -9,8 +9,8 @@
   external_node_modules = ["firebase-admin"]
   node_bundler = "esbuild"
   
-  [functions.sendReminders]
-    schedule = "0 5 * * *"  # Run daily at 5:00 AM UTC
+  # Note: Schedules are now defined directly within each function file
+  # using exports.config = { schedule: "cron-expression" }
 
 # Redirect and rewrite rules
 [[redirects]]
