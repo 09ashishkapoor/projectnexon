@@ -19,6 +19,7 @@
         <div class="tab-navigation">
             <button class="tab-button active" data-tab="subscription">Subscribe</button>
             <button class="tab-button" data-tab="calendar">90-Day Calendar</button>
+            <button class="tab-button" data-tab="status">Check Subscription</button>
         </div>
         <!-- END: Tab Navigation -->
 
@@ -92,6 +93,35 @@
             </div>
             <!-- END: Calendar Tab Pane -->
 
+            <!-- START: Subscription Status Tab Pane -->
+            <div id="status-tab" class="tab-pane">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-check-circle"></i> Check Subscription Status</h2>
+                    <p>Verify if your subscription is active and which Tithis you're subscribed to.</p>
+                </div>
+
+                <form id="status-check-form">
+                    <div class="form-group">
+                        <label for="status-email"><i class="fas fa-envelope"></i> Email Address:</label>
+                        <input type="email" id="status-email" name="email" placeholder="Enter your subscription email" required>
+                    </div>
+                    
+                    <!-- Hidden input for reCAPTCHA v3 token -->
+                    <input type="hidden" id="status-recaptcha-response" name="g-recaptcha-response">
+                    
+                    <button type="submit" id="check-status-button">
+                        <i class="fas fa-search"></i> Check Status
+                    </button>
+                </form>
+
+                <div id="status-message-area" class="message-area"></div>
+                <div id="subscription-details" class="subscription-details hidden">
+                    <h3>Your Subscription</h3>
+                    <div id="subscription-info"></div>
+                </div>
+            </div>
+            <!-- END: Subscription Status Tab Pane -->
+
         </div>
         <!-- END: Tab Content Wrapper -->
 
@@ -105,6 +135,7 @@
         <footer>
             <a href="PRIVACY.md" target="_blank"><i class="fas fa-lock"></i> Privacy Policy</a>
             <a href="https://forms.gle/mjRvySpLPoxGnuHX8" target="_blank"><i class="fas fa-question-circle"></i> Help</a>
+            <p class="footer-note"><i class="fas fa-info-circle"></i> If you're not receiving emails, please check your spam folder and add our email to your contacts.</p>
         </footer>
     </div>
 

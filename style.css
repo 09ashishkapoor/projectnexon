@@ -517,6 +517,79 @@ footer a:hover::after {
   padding: 20px;
 }
 
+/* Subscription Status Styles */
+.subscription-details {
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+.subscription-details.hidden {
+    display: none;
+}
+
+.subscription-info-box {
+    background: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.subscription-info-box p {
+    margin: 10px 0;
+}
+
+.active-status {
+    background-color: #4caf50;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.9em;
+    display: inline-block;
+}
+
+.subscribed-tithis-list {
+    background-color: #f0f0f0;
+    padding: 15px 15px 15px 35px;
+    border-radius: 5px;
+    margin: 10px 0;
+    max-height: 200px;
+    overflow-y: auto;
+    columns: 2;
+}
+
+.subscribed-tithis-list li {
+    margin-bottom: 5px;
+}
+
+.subscription-actions {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    text-align: right;
+}
+
+.unsubscribe-link {
+    color: #ff3b3b;
+    text-decoration: none;
+    font-size: 0.9em;
+    padding: 5px 10px;
+    border: 1px solid #ff3b3b;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.unsubscribe-link:hover {
+    background-color: #ff3b3b;
+    color: white;
+}
+
+@media (max-width: 600px) {
+    .subscribed-tithis-list {
+        columns: 1;
+    }
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .container {

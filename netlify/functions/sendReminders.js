@@ -12,14 +12,101 @@ const fromEmail = process.env.SENDER_EMAIL || 'reminder@yourdomain.com';
 const fromName = process.env.SENDER_NAME || 'Tithi Reminder';
 const BATCH_SIZE = 50;
 
+// Define tithiData directly in the function rather than loading from disk
+// Focusing on the most important tithis for the current and next years
+const tithiData = {
+  2025: {
+    "Amavasya": [
+      { "date": "2025-01-29", "full_name": "Pausha Amavasya" },
+      { "date": "2025-02-28", "full_name": "Magha Amavasya" },
+      { "date": "2025-03-30", "full_name": "Phalguna Amavasya" },
+      { "date": "2025-04-28", "full_name": "Chaitra Amavasya" },
+      { "date": "2025-05-28", "full_name": "Vaishakha Amavasya" },
+      { "date": "2025-06-26", "full_name": "Jyeshtha Amavasya" },
+      { "date": "2025-07-26", "full_name": "Ashadha Amavasya" },
+      { "date": "2025-08-24", "full_name": "Shravana Amavasya" },
+      { "date": "2025-09-23", "full_name": "Bhadrapada Amavasya" },
+      { "date": "2025-10-22", "full_name": "Ashwin Amavasya" },
+      { "date": "2025-11-21", "full_name": "Kartika Amavasya", "special": "Diwali" },
+      { "date": "2025-12-20", "full_name": "Margashirsha Amavasya" }
+    ],
+    "Purnima": [
+      { "date": "2025-01-14", "full_name": "Pausha Purnima" },
+      { "date": "2025-02-13", "full_name": "Magha Purnima" },
+      { "date": "2025-03-15", "full_name": "Phalguna Purnima", "special": "Holi" },
+      { "date": "2025-04-13", "full_name": "Chaitra Purnima", "special": "Hanuman Jayanti" },
+      { "date": "2025-05-13", "full_name": "Vaishakha Purnima", "special": "Buddha Purnima" },
+      { "date": "2025-06-12", "full_name": "Jyeshtha Purnima" },
+      { "date": "2025-07-11", "full_name": "Ashadha Purnima", "special": "Guru Purnima" },
+      { "date": "2025-08-09", "full_name": "Shravana Purnima", "special": "Raksha Bandhan" },
+      { "date": "2025-09-08", "full_name": "Bhadrapada Purnima" },
+      { "date": "2025-10-07", "full_name": "Ashwin Purnima" },
+      { "date": "2025-11-06", "full_name": "Kartika Purnima" },
+      { "date": "2025-12-05", "full_name": "Margashirsha Purnima" }
+    ],
+    "Ashtami": [
+      { "date": "2025-01-21", "full_name": "Shukla Ashtami" },
+      { "date": "2025-02-05", "full_name": "Krishna Ashtami" },
+      { "date": "2025-02-20", "full_name": "Shukla Ashtami" },
+      { "date": "2025-03-07", "full_name": "Krishna Ashtami" },
+      { "date": "2025-03-22", "full_name": "Shukla Ashtami" },
+      { "date": "2025-04-06", "full_name": "Krishna Ashtami" },
+      { "date": "2025-04-20", "full_name": "Shukla Ashtami" },
+      { "date": "2025-05-05", "full_name": "Krishna Ashtami" },
+      { "date": "2025-05-20", "full_name": "Shukla Ashtami" },
+      { "date": "2025-06-04", "full_name": "Krishna Ashtami" },
+      { "date": "2025-06-19", "full_name": "Shukla Ashtami" },
+      { "date": "2025-07-03", "full_name": "Krishna Ashtami" },
+      { "date": "2025-07-19", "full_name": "Shukla Ashtami" },
+      { "date": "2025-08-02", "full_name": "Krishna Ashtami" },
+      { "date": "2025-08-17", "full_name": "Shukla Ashtami" },
+      { "date": "2025-09-01", "full_name": "Krishna Ashtami", "special": "Janmashtami" },
+      { "date": "2025-09-16", "full_name": "Shukla Ashtami" },
+      { "date": "2025-09-30", "full_name": "Krishna Ashtami" },
+      { "date": "2025-10-15", "full_name": "Durga Mahashtami Puja", "special": "Durga Ashtami" },
+      { "date": "2025-10-30", "full_name": "Krishna Ashtami" },
+      { "date": "2025-11-14", "full_name": "Shukla Ashtami" },
+      { "date": "2025-11-28", "full_name": "Krishna Ashtami" },
+      { "date": "2025-12-13", "full_name": "Shukla Ashtami" },
+      { "date": "2025-12-28", "full_name": "Krishna Ashtami" }
+    ],
+    "Ekadashi": [
+      { "date": "2025-01-10", "full_name": "Pausha Putrada Ekadashi" },
+      { "date": "2025-01-24", "full_name": "Shittala Ekadashi" },
+      { "date": "2025-02-08", "full_name": "Jaya Ekadashi" },
+      { "date": "2025-02-23", "full_name": "Vijaya Ekadashi" },
+      { "date": "2025-03-10", "full_name": "Amalaki Ekadashi" },
+      { "date": "2025-03-25", "full_name": "Papmochani Ekadashi" },
+      { "date": "2025-04-08", "full_name": "Kamada Ekadashi" },
+      { "date": "2025-04-23", "full_name": "Varuthini Ekadashi" },
+      { "date": "2025-05-08", "full_name": "Mohini Ekadashi" },
+      { "date": "2025-05-22", "full_name": "Apara Ekadashi" },
+      { "date": "2025-06-07", "full_name": "Nirjala Ekadashi" },
+      { "date": "2025-06-21", "full_name": "Yogini Ekadashi" },
+      { "date": "2025-07-06", "full_name": "Devshayani Ekadashi", "special": "Ashadhi Ekadashi" },
+      { "date": "2025-07-21", "full_name": "Kamika Ekadashi" },
+      { "date": "2025-08-05", "full_name": "Shravana Putrada Ekadashi" },
+      { "date": "2025-08-19", "full_name": "Aja Ekadashi" },
+      { "date": "2025-09-03", "full_name": "Parivartini Ekadashi" },
+      { "date": "2025-09-18", "full_name": "Indira Ekadashi" },
+      { "date": "2025-10-03", "full_name": "Papankusha Ekadashi" },
+      { "date": "2025-10-17", "full_name": "Rama Ekadashi" },
+      { "date": "2025-11-01", "full_name": "Devutthana Ekadashi" },
+      { "date": "2025-11-16", "full_name": "Utpanna Ekadashi" },
+      { "date": "2025-12-01", "full_name": "Mokshada Ekadashi" },
+      { "date": "2025-12-15", "full_name": "Safala Ekadashi" },
+      { "date": "2025-12-30", "full_name": "Putrada Ekadashi" }
+    ],
+    "Chaturthi": [
+      { "date": "2025-09-07", "full_name": "Ganesh Chaturthi", "special": "Ganesh Chaturthi" }
+    ]
+  }
+};
+
 exports.handler = async (event, context) => {
   console.log('sendReminders function triggered.');
   
   try {
-    // Load and parse Tithi data
-    const tithiDataPath = path.join(__dirname, '../../tithis_2024_2030_basic.json');
-    const tithiData = JSON.parse(fs.readFileSync(tithiDataPath, 'utf8'));
-    
     // Determine target date
     const leadDays = parseInt(process.env.REMINDER_LEAD_DAYS || '2', 10);
     const targetDate = new Date();

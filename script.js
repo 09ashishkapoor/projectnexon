@@ -12,6 +12,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   const calendarContainer90 = document.getElementById('special-days-90');
   let calendarDataLoaded = false; // Flag to avoid reloading data unnecessarily
 
+  // Status check form elements
+  const statusForm = document.getElementById('status-check-form');
+  const statusButton = document.getElementById('check-status-button');
+  const statusMessageArea = document.getElementById('status-message-area');
+  const subscriptionDetails = document.getElementById('subscription-details');
+  const subscriptionInfo = document.getElementById('subscription-info');
+
   // --- START: Tab Switching Logic ---
   function switchTab(targetTabId) {
     tabPanes.forEach(pane => {
@@ -281,6 +288,112 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Re-enable the submit button
       submitButton.disabled = false;
       submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Subscribe';
+    }
+  }
+
+  // Handle status check form submission
+  if (statusForm) {
+    statusForm.addEventListener('submit', handleStatusCheckForm);
+  }
+
+  // Status check form submission handler
+  async function handleStatusCheckForm(e) {
+    e.preventDefault();
+    
+    // Clear previous messages and reset display
+    statusMessageArea.innerHTML = '';
+    statusMessageArea.className = 'message-area';
+    subscriptionDetails.classList.add('hidden');
+    subscriptionInfo.innerHTML = '';
+    
+    // Disable the submit button to prevent multiple submissions
+    statusButton.disabled = true;
+    statusButton.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Checking...';
+
+    const emailInput = document.getElementById('status-email');
+    const email = emailInput.value.trim();
+    
+    // Execute reCAPTCHA v3
+    try {
+      grecaptcha.ready(function() {
+        grecaptcha.execute('6LdohQsrAAAAAKUe4KxI-3Jf2hxYREvgqeD9ZZUo', {action: 'check_status'})
+          .then(async function(token) {
+            // Add token to form
+            document.getElementById('status-recaptcha-response').value = token;
+            
+            // Prepare payload with the reCAPTCHA token
+            const payload = {
+              email,
+              'g-recaptcha-response': token
+            };
+            
+            try {
+              const response = await fetch('/.netlify/functions/checkStatus', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+              });
+
+              const data = await response.json();
+
+              if (response.ok) {
+                // Success - show subscription details
+                statusMessageArea.textContent = data.message;
+                statusMessageArea.className = 'message-area success';
+                
+                // Display subscription details
+                if (data.active && data.subscribedTithis && data.subscribedTithis.length > 0) {
+                  // Show the subscription details section
+                  subscriptionDetails.classList.remove('hidden');
+                  
+                  // Create HTML for the subscribed tithis
+                  const tithiListHTML = data.subscribedTithis
+                    .map(tithi => `<li>${tithi}</li>`)
+                    .join('');
+                  
+                  // Format subscription date (we don't have this from the API currently)
+                  subscriptionInfo.innerHTML = `
+                    <div class="subscription-info-box">
+                      <p><strong>Email:</strong> ${data.email}</p>
+                      <p><strong>Status:</strong> <span class="active-status">Active</span></p>
+                      <p><strong>Subscribed Tithis:</strong></p>
+                      <ul class="subscribed-tithis-list">
+                        ${tithiListHTML}
+                      </ul>
+                      <div class="subscription-actions">
+                        <a href="/.netlify/functions/unsubscribe?email=${encodeURIComponent(data.email)}" 
+                           class="unsubscribe-link"
+                           onclick="return confirm('Are you sure you want to unsubscribe? This will cancel all your Tithi reminders.');">
+                          <i class="fas fa-times-circle"></i> Unsubscribe
+                        </a>
+                      </div>
+                    </div>
+                  `;
+                }
+              } else {
+                // Error response
+                statusMessageArea.textContent = data.message || 'Failed to check subscription status. Please try again.';
+                statusMessageArea.className = 'message-area error';
+              }
+            } catch (error) {
+              console.error('Error checking status:', error);
+              statusMessageArea.textContent = 'An unexpected error occurred. Please try again later.';
+              statusMessageArea.className = 'message-area error';
+            } finally {
+              // Re-enable the submit button
+              statusButton.disabled = false;
+              statusButton.innerHTML = '<i class="fas fa-search"></i> Check Status';
+            }
+          });
+      });
+    } catch (error) {
+      console.error('reCAPTCHA error:', error);
+      statusMessageArea.textContent = 'Error with verification system. Please try again later.';
+      statusMessageArea.className = 'message-area error';
+      
+      // Re-enable the submit button
+      statusButton.disabled = false;
+      statusButton.innerHTML = '<i class="fas fa-search"></i> Check Status';
     }
   }
 });
