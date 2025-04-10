@@ -100,3 +100,38 @@ This document outlines the specific development tasks required to build the Tith
 - 2025-04-05: Updated `PLANNING.md` to include detailed implementation phases aligned with this task list.
 - 2025-04-05: Created `SETUP_BLOBS.md` and `.env.example` to document Blob storage configuration requirements after discovering missing environment variables (NETLIFY_SITE_ID, NETLIFY_BLOBS_TOKEN).
 - 2025-04-07: Created `SETUP_BREVO.md` to document Brevo email service configuration after switching from Resend.
+
+## 90-Day Special Days Calendar Feature (Netlify Deployment Plan)
+
+This outlines the plan to implement the 90-Day Special Days calendar view, adapted for static deployment on platforms like Netlify.
+
+1.  **Data Pre-generation (Python Script):**
+    *   Modify or create a Python script (e.g., adapt `calculate_all_tithis.py` or create `generate_special_days_list.py`).
+    *   Load the main Tithi data (`tithis_2024_2030_basic.json`).
+    *   Iterate through the data (2025-2030).
+    *   Filter to extract only entries considered "special days".
+        *   *Filtering Rule:* Include entries where `full_name` does **not** match the standard "Paksha TithiName" pattern (e.g., "Shukla Pratipada", "Krishna Amavasya"). This assumes festival names from `special_days.json` are distinct.
+    *   Save the filtered list (containing objects like `{ "date": "YYYY-MM-DD", "full_name": "Festival Name" }`) into a new static JSON file named `upcoming_special_days_data.json`.
+    *   This script is run locally or during a build step, *before* deployment.
+
+2.  **Frontend HTML (`index.html`):**
+    *   Implement the tab navigation structure (Subscribe / 90-Day Calendar) as specified in `FESTIVAL_FEATURE.md`.
+    *   Create the `calendar-tab` pane.
+    *   Add containers for the three time periods (e.g., `special-days-30`, `special-days-60`, `special-days-90`).
+
+3.  **Frontend JavaScript (`static/js/script.js`):**
+    *   Implement tab switching functionality.
+    *   When the calendar tab is activated:
+        *   Fetch the static `upcoming_special_days_data.json` file.
+        *   Get the user's current date (`new Date()`).
+        *   Calculate the date 90 days from the current date.
+        *   Filter the loaded festival data to include only entries between the current date and the 90-day future date.
+        *   Calculate the number of days from today for each filtered festival.
+        *   Group the filtered festivals into 0-30, 31-60, and 61-90 day buckets.
+        *   Render the grouped festivals into their respective HTML containers, displaying date and name.
+
+4.  **Frontend CSS (`static/css/style.css`):**
+    *   Implement the styling for tabs and the calendar/festival list sections as defined in `FESTIVAL_FEATURE.md`.
+
+5.  **Deployment:**
+    *   Deploy the project folder containing `index.html`, CSS, JS, and the generated `upcoming_special_days_data.json` as a static site to Netlify.

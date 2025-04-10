@@ -33,7 +33,7 @@ _Last updated: April 5, 2025_
 
 For privacy-related questions or data requests, please contact:
 
-<!-- Providing a contact email is highly recommended for transparency and compliance with data protection laws. -->
+
 
 **Email:** kaliputraashish@gmail.com (Emails will be answered on a best-effort basis only)
 

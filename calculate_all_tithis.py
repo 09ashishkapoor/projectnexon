@@ -66,8 +66,8 @@ def normalize_tithi(tithi_num):
 def get_hindu_month(date_obj):
     """Approximate Hindu month based on Gregorian date"""
     # This is a simplified approach - just mapping Gregorian months to Hindu months
-    # with an offset of about 2 weeks
-    month_index = (date_obj.month + 9) % 12
+    # Adjusted offset from +9 to +8 to correct observed shift
+    month_index = (date_obj.month + 8) % 12
     return HINDU_MONTHS[month_index]
 
 def format_date(year, month, day):
@@ -135,26 +135,17 @@ def generate_tithis(start_year, end_year):
         # Determine full name based on special cases
         date_key = current_date.strftime("%Y-%m-%d")
         if date_key in special_days:
+            # Use the specific name if provided
             tithi_full_name = special_days[date_key]
         elif norm_tithi == 15 and paksha == "Shukla":
-            # Special names for Purnima
-            if hindu_month == "Chaitra":
-                tithi_full_name = "Chaitra Purnima (Hanuman Jayanti)"
-            elif hindu_month == "Vaishakha":
-                tithi_full_name = "Vaishakha Purnima (Buddha Purnima)"
-            elif hindu_month == "Ashwin":
-                tithi_full_name = "Sharad Purnima"
-            else:
-                tithi_full_name = f"{hindu_month} Purnima"
+            # Generic Purnima name (removed month)
+            tithi_full_name = "Shukla Purnima"
         elif tithi_num == 30:
-            # Special names for Amavasya
-            if hindu_month == "Ashwin":
-                tithi_full_name = "Mahalaya Amavasya"
-            else:
-                tithi_full_name = f"{hindu_month} Amavasya"
+            # Generic Amavasya name (removed month)
+            tithi_full_name = "Krishna Amavasya"
         else:
-            # Regular tithi naming
-            tithi_full_name = f"{hindu_month} {paksha} {tithi_name}"
+            # Generic regular tithi naming (removed month)
+            tithi_full_name = f"{paksha} {tithi_name}"
         
         # Determine which category this belongs to in the output JSON
         if norm_tithi == 15 and paksha == "Shukla":
@@ -187,35 +178,23 @@ def generate_tithis(start_year, end_year):
     return result
 
 def load_special_days():
-    """Load special Hindu festival days"""
-    return {
-        # 2024
-        "2024-01-15": "Thai Pongal",
-        "2024-01-26": "Vasant Panchami",
-        "2024-03-25": "Holi",
-        "2024-03-09": "Maha Shivaratri",
-        "2024-04-09": "Ugadi/Gudi Padwa",
-        "2024-04-17": "Ram Navami",
-        "2024-08-19": "Krishna Janmashtami",
-        "2024-09-07": "Ganesh Chaturthi",
-        "2024-10-02": "Vijaya Dashami (Dussehra)",
-        "2024-10-31": "Diwali (Deepavali)",
-        "2024-11-12": "Chhath Puja",
-        
-        # 2025
-        "2025-02-01": "Vasant Panchami",
-        "2025-02-26": "Maha Shivaratri",
-        "2025-03-30": "Holi",
-        "2025-03-29": "Gudi Padwa/Ugadi",
-        "2025-04-07": "Vaishakha Shukla Dwadashi",
-        "2025-04-10": "Vaishakha Purnima (Buddha Purnima)",
-        "2025-09-07": "Krishna Janmashtami",
-        "2025-09-28": "Ganesh Chaturthi",
-        "2025-10-20": "Dussehra",
-        "2025-11-12": "Diwali (Deepavali)",
-        
-        # Add more special days as needed
-    }
+    """Load special Hindu festival days from special_days.json"""
+    filename = "special_days.json"
+    if os.path.exists(filename):
+        try:
+            with open(filename, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                print(f"Loaded {len(data)} special days from {filename}")
+                return data
+        except json.JSONDecodeError as e:
+            print(f"Error decoding JSON from {filename}: {e}")
+            return {}
+        except Exception as e:
+            print(f"Error reading {filename}: {e}")
+            return {}
+    else:
+        print(f"Warning: {filename} not found. No special days loaded.")
+        return {}
 
 def save_to_json(data, filename):
     """Save data to JSON file"""
@@ -267,93 +246,19 @@ def compare_with_existing():
 
 def main():
     try:
-        # Check if we should do a full generation or just fix specific dates
-        answer = input("Generate full tithi dataset for 2024-2030? (y/n, default=n): ")
+        # Modified: Directly generate full dataset starting from 2025
+        print("Starting full tithi dataset generation for 2025-2030...")
+        tithi_data = generate_tithis(2025, 2030)
+        # Modified: Save directly to the target file
+        save_to_json(tithi_data, "tithis_2024_2030_basic.json")
         
-        if answer.lower() == 'y':
-            print("Starting full tithi dataset generation...")
-            tithi_data = generate_tithis(2024, 2030)
-            save_to_json(tithi_data, "tithis_2024_2030_accurate.json")
-            
-            # Compare with existing data
-            print("Comparing with existing data...")
-            compare_with_existing()
-        else:
-            # Just fix specific dates
-            print("Fixing specific dates only...")
-            april_07_2025 = datetime.date(2025, 4, 7)
-            april_10_2025 = datetime.date(2025, 4, 10)
-            
-            # Calculate tithis for these specific dates
-            tithi_apr07 = get_tithi_for_date(april_07_2025, BANGALORE)
-            tithi_apr10 = get_tithi_for_date(april_10_2025, BANGALORE)
-            
-            print(f"2025-04-07: Tithi number {tithi_apr07} ({TITHI_NAMES[normalize_tithi(tithi_apr07)]})")
-            print(f"2025-04-10: Tithi number {tithi_apr10} ({TITHI_NAMES[normalize_tithi(tithi_apr10)]})")
-            
-            # Load existing JSON file
-            try:
-                with open("tithis_2024_2030.json", 'r', encoding='utf-8') as f:
-                    existing_data = json.load(f)
-                
-                # Make a backup of the original file
-                backup_file = "tithis_2024_2030_backup.json"
-                if not os.path.exists(backup_file):
-                    with open(backup_file, 'w', encoding='utf-8') as f:
-                        json.dump(existing_data, f, indent=2)
-                    print(f"Backup created at {backup_file}")
-                
-                # Update the specific dates
-                # Find and update April 10, 2025 (should be Purnima)
-                found_apr10 = False
-                for entry in existing_data["2025"]["Purnima"]:
-                    if entry["date"] == "2025-04-10":
-                        entry["full_name"] = "Vaishakha Purnima (Buddha Purnima)"
-                        found_apr10 = True
-                        break
-                
-                if not found_apr10:
-                    print("Adding April 10, 2025 as Purnima")
-                    existing_data["2025"]["Purnima"].append({
-                        "date": "2025-04-10",
-                        "full_name": "Vaishakha Purnima (Buddha Purnima)"
-                    })
-                
-                # Remove incorrect April 13, 2025 Purnima entry if it exists
-                existing_data["2025"]["Purnima"] = [
-                    entry for entry in existing_data["2025"]["Purnima"] 
-                    if entry["date"] != "2025-04-13"
-                ]
-                
-                # Find and update April 7, 2025 (should be Dwadashi)
-                found_apr07 = False
-                for entry in existing_data["2025"]["Dwadashi"]:
-                    if entry["date"] == "2025-04-07":
-                        entry["full_name"] = "Vaishakha Shukla Dwadashi"
-                        found_apr07 = True
-                        break
-                        
-                if not found_apr07:
-                    print("Adding April 7, 2025 as Dwadashi")
-                    existing_data["2025"]["Dwadashi"].append({
-                        "date": "2025-04-07",
-                        "full_name": "Vaishakha Shukla Dwadashi"
-                    })
-                
-                # Remove incorrect April 10, 2025 Dwadashi entry if it exists
-                existing_data["2025"]["Dwadashi"] = [
-                    entry for entry in existing_data["2025"]["Dwadashi"] 
-                    if entry["date"] != "2025-04-10"
-                ]
-                
-                # Save the updated data
-                with open("tithis_2024_2030.json", 'w', encoding='utf-8') as f:
-                    json.dump(existing_data, f, indent=2)
-                    
-                print("Successfully updated specific dates in tithis_2024_2030.json")
-                
-            except Exception as e:
-                print(f"Error updating specific dates: {e}")
+        print("Successfully generated and saved data (2025-2030) to tithis_2024_2030_basic.json")
+
+        # Optional: Keep comparison logic if needed, but remove prompt
+        # print("Comparing with backup data (if exists)...")
+        # compare_with_existing() # Note: This compares with a different file, adjust if needed
+
+        # Removed the 'else' block for fixing specific dates and the input prompt
         
         print("Done!")
     except Exception as e:

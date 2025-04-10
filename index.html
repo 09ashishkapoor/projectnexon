@@ -15,43 +15,87 @@
         <h1>Subscribe to Tithi Reminders</h1>
         <p>Select the Tithis you want to receive email reminders for (2 days in advance). You'll receive updates until 2030.</p>
 
-        <div class="card">
-            <h2 class="card-title"><i class="fas fa-bell"></i> Why Subscribe?</h2>
-            <p>Stay connected with important Hindu calendar dates. Our reminders help you prepare for upcoming Tithis with advance notifications.</p>
+        <!-- START: Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-button active" data-tab="subscription">Subscribe</button>
+            <button class="tab-button" data-tab="calendar">90-Day Calendar</button>
         </div>
+        <!-- END: Tab Navigation -->
 
-        <form id="subscription-form">
-            <div class="form-group">
-                <label for="email"><i class="fas fa-envelope"></i> Email Address:</label>
-                <input type="email" id="email" name="email" placeholder="Your email address" required>
-            </div>
+        <!-- START: Tab Content Wrapper -->
+        <div class="tab-content">
 
-            <!-- Honeypot field (hidden from users) -->
-            <div style="display:none;">
-                <label for="website">Website (leave blank):</label>
-                <input type="text" id="website" name="website" autocomplete="off">
-            </div>
-
-            <div class="form-group">
-                <label><i class="fas fa-list-check"></i> Select Tithis:</label>
-                <div id="tithi-checkboxes" class="tithi-grid">
-                    <!-- Tithi checkboxes will be loaded here by script.js -->
-                    <p class="loading-text">Loading Tithis...</p>
+            <!-- START: Subscription Tab Pane -->
+            <div id="subscription-tab" class="tab-pane active">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-bell"></i> Why Subscribe?</h2>
+                    <p>Stay connected with important Hindu calendar dates. Our reminders help you prepare for upcoming Tithis with advance notifications.</p>
                 </div>
-                <small>Check at least one Tithi. You'll receive reminders for these tithis until 2030.</small>
+
+                <form id="subscription-form">
+                    <div class="form-group">
+                        <label for="email"><i class="fas fa-envelope"></i> Email Address:</label>
+                        <input type="email" id="email" name="email" placeholder="Your email address" required>
+                    </div>
+
+                    <!-- Honeypot field (hidden from users) -->
+                    <div style="display:none;">
+                        <label for="website">Website (leave blank):</label>
+                        <input type="text" id="website" name="website" autocomplete="off">
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-list-check"></i> Select Tithis:</label>
+                        <div id="tithi-checkboxes" class="tithi-grid">
+                            <!-- Tithi checkboxes will be loaded here by script.js -->
+                            <p class="loading-text">Loading Tithis...</p>
+                        </div>
+                        <small>Check at least one Tithi. You'll receive reminders for these tithis until 2030.</small>
+                    </div>
+
+                    <!-- Hidden input for reCAPTCHA v3 token -->
+                    <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+
+                    <button type="submit" id="submit-button">
+                        <i class="fas fa-paper-plane"></i> Subscribe
+                    </button>
+                </form>
+
+                <div id="message-area" class="message-area"></div>
+
             </div>
+            <!-- END: Subscription Tab Pane -->
 
-            <!-- Hidden input for reCAPTCHA v3 token -->
-            <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+            <!-- START: Calendar Tab Pane -->
+            <div id="calendar-tab" class="tab-pane">
+                <div class="calendar-container">
+                    <h2>Upcoming Special Days (Next 90 Days)</h2>
 
-            <button type="submit" id="submit-button">
-                <i class="fas fa-paper-plane"></i> Subscribe
-            </button>
-        </form>
+                    <!-- Next 30 days section -->
+                    <div class="calendar-section">
+                        <h3>Next 30 Days</h3>
+                        <div id="special-days-30" class="special-days-list"></div>
+                    </div>
 
-        <div id="message-area" class="message-area"></div>
-        
-        <!-- Feedback button linking to Google Forms -->
+                    <!-- 31-60 days section -->
+                    <div class="calendar-section">
+                        <h3>31-60 Days</h3>
+                        <div id="special-days-60" class="special-days-list"></div>
+                    </div>
+
+                    <!-- 61-90 days section -->
+                    <div class="calendar-section">
+                        <h3>61-90 Days</h3>
+                        <div id="special-days-90" class="special-days-list"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- END: Calendar Tab Pane -->
+
+        </div>
+        <!-- END: Tab Content Wrapper -->
+
+        <!-- Feedback button linking to Google Forms (Moved outside tab content) -->
         <div style="text-align: center; margin-top: 25px;">
             <a href="https://forms.gle/mjRvySpLPoxGnuHX8" target="_blank" class="feedback-btn">
                 <i class="fas fa-comments feedback-icon"></i> Share Feedback

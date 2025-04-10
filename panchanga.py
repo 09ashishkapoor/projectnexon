@@ -104,13 +104,13 @@ def simplified_tithi(jd):
 
 # Functions that use ephem if available
 def solar_longitude(jd):
-    """Solar longitude at given instant (julian day) jd"""
+    """Solar longitude (using RA as proxy) at given instant (julian day) jd"""
     if EPHEM_AVAILABLE:
         sun = ephem.Sun()
         date = ephem.Date(jd - 2415020.0) # Convert JD to Dublin JD used by ephem
         sun.compute(date)
         # Convert to degrees and normalize
-        return (sun.lon * 180 / ephem.pi) % 360
+        return (sun.a_ra * 180 / ephem.pi) % 360
     else:
         # Simplified calculation - less accurate
         # Using a tropical year of 365.24219 days
@@ -118,13 +118,13 @@ def solar_longitude(jd):
         return year_fraction * 360
 
 def lunar_longitude(jd):
-    """Lunar longitude at given instant (julian day) jd"""
+    """Lunar longitude (using RA as proxy) at given instant (julian day) jd"""
     if EPHEM_AVAILABLE:
         moon = ephem.Moon()
         date = ephem.Date(jd - 2415020.0) # Convert JD to Dublin JD used by ephem
         moon.compute(date)
         # Convert to degrees and normalize
-        return (moon.lon * 180 / ephem.pi) % 360
+        return (moon.a_ra * 180 / ephem.pi) % 360
     else:
         # Simplified calculation - less accurate
         # Mean lunar motion per day: about 13.176358 degrees
