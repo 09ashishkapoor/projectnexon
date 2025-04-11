@@ -107,7 +107,7 @@ exports.handler = async (event, context) => {
   console.log('sendReminders function triggered.');
   
   try {
-    // Determine target date
+    // Determine target date - use environment variable for more flexibility
     const leadDays = parseInt(process.env.REMINDER_LEAD_DAYS || '2', 10);
     const targetDate = new Date();
     targetDate.setUTCDate(targetDate.getUTCDate() + leadDays);
@@ -126,6 +126,7 @@ exports.handler = async (event, context) => {
               name: tithiName,
               fullName: entry.full_name,
               date: entry.date,
+              special: entry.special || null
             });
           }
         }
@@ -133,11 +134,18 @@ exports.handler = async (event, context) => {
     }
 
     if (!upcomingTithis.length) {
+      console.log(`No Tithis found for target date ${targetDateString}`);
       return {
         statusCode: 200,
-        body: JSON.stringify({ message: 'No Tithis found for target date.' }),
+        body: JSON.stringify({ 
+          message: 'No Tithis found for target date.',
+          targetDate: targetDateString,
+          leadDays: leadDays
+        }),
       };
     }
+
+    console.log(`Found ${upcomingTithis.length} upcoming Tithis for ${targetDateString}: ${upcomingTithis.map(t => t.name).join(', ')}`);
 
     // Get all subscriber keys from Firebase
     const subscriberKeys = await subscriptionStore.list();
@@ -173,19 +181,24 @@ exports.handler = async (event, context) => {
     }
 
     if (!subscribersToNotify.length) {
+      console.log(`No subscribers found for upcoming Tithis on ${targetDateString}`);
       return {
         statusCode: 200,
-        body: JSON.stringify({ message: 'No subscribers found for upcoming Tithis.' }),
+        body: JSON.stringify({ 
+          message: 'No subscribers found for upcoming Tithis.', 
+          tithiCount: upcomingTithis.length,
+          subscriberCount: subscriberKeys.length 
+        }),
       };
     }
 
     // Send emails
-    console.log(`Sending notifications to ${subscribersToNotify.length} subscribers`);
+    console.log(`Sending notifications to ${subscribersToNotify.length} subscribers for Tithis on ${targetDateString}`);
     
     const emailResults = await Promise.allSettled(
       subscribersToNotify.map(async ({ email, tithis }) => {
         const tithiListString = tithis
-          .map(t => `- ${t.fullName} (${t.name}) on ${t.date}`)
+          .map(t => `- ${t.fullName} ${t.special ? `(${t.special})` : ''} on ${t.date}`)
           .join('\n');
 
         // Create Brevo email send request
@@ -195,11 +208,13 @@ exports.handler = async (event, context) => {
         sendSmtpEmail.htmlContent = `
           <p>Namaskar,</p>
           <p>This is a reminder for the following Tithi(s) occurring in ${leadDays} day(s) on <strong>${targetDateString}</strong>:</p>
-          <pre>${tithiListString}</pre>
+          <ul>
+            ${tithis.map(t => `<li><strong>${t.fullName}</strong> ${t.special ? `(${t.special})` : ''}</li>`).join('')}
+          </ul>
           <p>Regards,</p>
           <p>Your Tithi Reminder Service</p>
           <p style="font-size:0.8em; color:#777;">
-            <a href="/.netlify/functions/unsubscribe?email=${email}" style="color:#777;">Unsubscribe</a>
+            <a href="https://simpletithireminder.netlify.app/.netlify/functions/unsubscribe?email=${encodeURIComponent(email)}" style="color:#777;">Unsubscribe</a>
           </p>
         `;
         
@@ -213,18 +228,28 @@ exports.handler = async (event, context) => {
         }];
 
         // Send email using Brevo
-        return apiInstance.sendTransacEmail(sendSmtpEmail);
+        try {
+          const result = await apiInstance.sendTransacEmail(sendSmtpEmail);
+          console.log(`Email sent successfully to ${email}`);
+          return result;
+        } catch (error) {
+          console.error(`Failed to send email to ${email}:`, error);
+          throw error;
+        }
       })
     );
 
     const successCount = emailResults.filter(r => r.status === 'fulfilled').length;
     const failureCount = emailResults.filter(r => r.status === 'rejected').length;
 
+    console.log(`Email sending completed. Success: ${successCount}, Failed: ${failureCount}`);
+
     return {
       statusCode: failureCount ? 500 : 200,
       body: JSON.stringify({
         message: `Reminder process complete. Successful: ${successCount}, Failed: ${failureCount}`,
-        totalSubscribers: subscribersToNotify.length
+        totalSubscribers: subscribersToNotify.length,
+        targetDate: targetDateString
       }),
     };
 
@@ -242,5 +267,6 @@ exports.handler = async (event, context) => {
 
 // Export schedule configuration
 exports.config = {
-  schedule: "0 5 * * *" // run at 5:00 AM UTC daily
+  // Run more frequently for testing until we confirm it's working
+  schedule: "0 */4 * * *" // run every 4 hours (6 times per day)
 };
