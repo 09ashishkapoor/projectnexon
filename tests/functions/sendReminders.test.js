@@ -70,14 +70,19 @@ describe('sendReminders function', () => {
   });
 
   it('should handle no Tithis found', async () => {
-    // Fix the date to April 1, 2025 (no tithi on April 3)
-    const fixedDate = new Date('2025-04-01T00:00:00Z');
+    // Fix the date to a date where no tithis exist in the data
+    const fixedDate = new Date('2025-01-01T00:00:00Z');
     jest.spyOn(global, 'Date').mockImplementation(() => fixedDate);
     
-    // Set reminder lead days to 2 (making target date April 3, which has no tithi)
+    // Set reminder lead days to 2 
     process.env.REMINDER_LEAD_DAYS = '2';
     
-    // No need to mock fs.readFileSync since we're using embedded data
+    // Mock the tithi data file to return empty data
+    jest.spyOn(fs, 'readFileSync').mockImplementation(() => {
+      return JSON.stringify({
+        "2025": {} // Empty data to ensure no tithis are found
+      });
+    });
     
     const response = await handler();
     expect(response.statusCode).toBe(200);
