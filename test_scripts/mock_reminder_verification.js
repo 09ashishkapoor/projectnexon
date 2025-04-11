@@ -5,56 +5,33 @@
  * to test only the core reminder logic without external dependencies.
  */
 
+const fs = require('fs');
+const path = require('path');
+
 // Mock system date for testing specific dates
 const RealDate = global.Date;
 
-// Tithi data from sendReminders.js - keep this in sync with the actual function
-const tithiData = {
-  2025: {
-    "Ekadashi": [
-      { "date": "2025-01-10", "full_name": "Pausha Putrada Ekadashi" },
-      { "date": "2025-01-24", "full_name": "Shittala Ekadashi" },
-      { "date": "2025-02-08", "full_name": "Jaya Ekadashi" },
-      { "date": "2025-02-23", "full_name": "Vijaya Ekadashi" },
-      { "date": "2025-03-10", "full_name": "Amalaki Ekadashi" },
-      { "date": "2025-03-25", "full_name": "Papmochani Ekadashi" },
-      { "date": "2025-04-08", "full_name": "Kamada Ekadashi" },
-      { "date": "2025-04-23", "full_name": "Varuthini Ekadashi" },
-      { "date": "2025-05-08", "full_name": "Mohini Ekadashi" },
-      { "date": "2025-05-22", "full_name": "Apara Ekadashi" },
-      { "date": "2025-06-07", "full_name": "Nirjala Ekadashi" },
-      { "date": "2025-06-21", "full_name": "Yogini Ekadashi" },
-      { "date": "2025-07-06", "full_name": "Devshayani Ekadashi", "special": "Ashadhi Ekadashi" },
-      { "date": "2025-07-21", "full_name": "Kamika Ekadashi" },
-      { "date": "2025-08-05", "full_name": "Shravana Putrada Ekadashi" },
-      { "date": "2025-08-19", "full_name": "Aja Ekadashi" },
-      { "date": "2025-09-03", "full_name": "Parivartini Ekadashi" },
-      { "date": "2025-09-18", "full_name": "Indira Ekadashi" },
-      { "date": "2025-10-03", "full_name": "Papankusha Ekadashi" },
-      { "date": "2025-10-17", "full_name": "Rama Ekadashi" },
-      { "date": "2025-11-01", "full_name": "Devutthana Ekadashi" },
-      { "date": "2025-11-16", "full_name": "Utpanna Ekadashi" },
-      { "date": "2025-12-01", "full_name": "Mokshada Ekadashi" },
-      { "date": "2025-12-15", "full_name": "Safala Ekadashi" },
-      { "date": "2025-12-30", "full_name": "Putrada Ekadashi" }
-    ],
-    "Purnima": [
-      { "date": "2025-01-14", "full_name": "Pausha Purnima" },
-      { "date": "2025-02-13", "full_name": "Magha Purnima" },
-      { "date": "2025-03-15", "full_name": "Phalguna Purnima", "special": "Holi" },
-      { "date": "2025-04-13", "full_name": "Chaitra Purnima", "special": "Hanuman Jayanti" },
-      { "date": "2025-05-13", "full_name": "Vaishakha Purnima", "special": "Buddha Purnima" },
-      { "date": "2025-06-12", "full_name": "Jyeshtha Purnima" },
-      { "date": "2025-07-11", "full_name": "Ashadha Purnima", "special": "Guru Purnima" },
-      { "date": "2025-08-09", "full_name": "Shravana Purnima", "special": "Raksha Bandhan" },
-      { "date": "2025-09-08", "full_name": "Bhadrapada Purnima" },
-      { "date": "2025-10-07", "full_name": "Ashwin Purnima" },
-      { "date": "2025-11-06", "full_name": "Kartika Purnima" },
-      { "date": "2025-12-05", "full_name": "Margashirsha Purnima" }
-    ]
-    // Additional tithi types removed for brevity
-  }
-};
+// Load tithi data from the main JSON file to match production behavior
+let tithiData = {};
+try {
+  const tithiDataPath = path.join(__dirname, '..', 'tithis_2024_2030_basic.json');
+  const tithiDataRaw = fs.readFileSync(tithiDataPath, 'utf8');
+  tithiData = JSON.parse(tithiDataRaw);
+  console.log('Loaded complete tithi data for testing');
+} catch (error) {
+  console.error('Error loading tithi data from file:', error);
+  // Fallback to minimal test data
+  tithiData = {
+    2025: {
+      "Ekadashi": [
+        { "date": "2025-04-08", "full_name": "Kamada Ekadashi" }
+      ],
+      "Purnima": [
+        { "date": "2025-04-12", "full_name": "Chaitra Purnima", "special": "Hanuman Jayanti" }
+      ]
+    }
+  };
+}
 
 // Mock subscribers database
 const mockSubscribers = {
@@ -235,14 +212,14 @@ function verifyReminderSystem() {
   // Test 1: Date with Kamada Ekadashi (April 6 + 2 days = April 8, 2025)
   runTest('2025-04-06T12:00:00Z', 2);
   
-  // Test 2: Date with Chaitra Purnima (April 11 + 2 days = April 13, 2025)
-  runTest('2025-04-11T12:00:00Z', 2);
-  
-  // Test 3: Current date with no tithis (April 10 + 2 days = April 12, 2025)
+  // Test 2: Date with Chaitra Purnima (April 10 + 2 days = April 12, 2025)
   runTest('2025-04-10T12:00:00Z', 2);
   
-  // Test 4: Different lead time (April 12 + 1 day = April 13, 2025 - Chaitra Purnima)
-  runTest('2025-04-12T12:00:00Z', 1);
+  // Test 3: Current date with no tithis (April 9 + 2 days = April 11, 2025)
+  runTest('2025-04-09T12:00:00Z', 2);
+  
+  // Test 4: Different lead time (April 11 + 1 day = April 12, 2025 - Chaitra Purnima)
+  runTest('2025-04-11T12:00:00Z', 1);
   
   console.log('\n' + '='.repeat(80));
   console.log('🏁 Verification complete!');
