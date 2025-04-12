@@ -8,6 +8,8 @@
   # Include external_node_modules to ensure proper packaging
   external_node_modules = ["firebase-admin"]
   node_bundler = "esbuild"
+  # Include the tithi data file in the function bundle
+  included_files = ["tithis_2024_2030_basic.json"]
   
   # Note: Schedules are now defined directly within each function file
   # using exports.config = { schedule: "cron-expression" }

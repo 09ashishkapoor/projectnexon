@@ -8,6 +8,7 @@ This document provides documentation for debugging tools and processes for the T
 - [Common Issues](#common-issues)
 - [Environment Variables](#environment-variables)
 - [Monitoring and Logs](#monitoring-and-logs)
+- [File Path Issues](#file-path-issues)
 
 ## Debug Functions
 
@@ -119,6 +120,73 @@ If the functions are failing, use the debugReminders function to get detailed in
 1. Run `node test_reminders.js` to check for any errors
 2. Check Netlify function logs for error messages
 3. Verify data consistency in your Firebase database
+
+## File Path Issues
+
+### Tithi Data File Not Found
+
+A common error in the Netlify serverless environment is:
+
+```
+Error loading tithi data from file: Error: ENOENT: no such file or directory, open '/var/task/tithis_2024_2030_basic.json'
+```
+
+This occurs because the file path in the serverless environment (`/var/task/`) is different from your local environment.
+
+#### How to Fix
+
+1. **Modify the file path in sendReminders.js**:
+
+   Instead of:
+   ```javascript
+   const tithiDataPath = path.join(__dirname, '..', '..', 'tithis_2024_2030_basic.json');
+   ```
+
+   Use:
+   ```javascript
+   // Handle both local development and Netlify serverless environments
+   const tithiDataPath = process.env.NETLIFY 
+     ? path.join(__dirname, 'tithis_2024_2030_basic.json')  // Netlify serverless path
+     : path.join(__dirname, '..', '..', 'tithis_2024_2030_basic.json'); // Local dev path
+   ```
+
+2. **Include the file in the function bundle**:
+   
+   Update your `netlify.toml` to include the tithi data file in the function bundle:
+
+   ```toml
+   [functions]
+     directory = "netlify/functions"
+     included_files = ["tithis_2024_2030_basic.json"]
+   ```
+
+3. **Testing the fix**:
+   
+   After deploying these changes, run:
+   ```bash
+   node test_reminders.js
+   ```
+   
+   This should now be able to access the tithi data file correctly.
+
+### Alternative Solution: Bundle Data
+
+If the above solution doesn't work, an alternative is to bundle the tithi data directly in the code:
+
+1. Convert the JSON file to a JavaScript module:
+   ```javascript
+   // Create a file named tithiData.js
+   module.exports = {
+     2024: { ... },
+     2025: { ... },
+     // etc.
+   };
+   ```
+
+2. Import this module in sendReminders.js instead of reading from the file system:
+   ```javascript
+   const tithiData = require('./tithiData');
+   ```
 
 ## Environment Variables
 

@@ -15,7 +15,12 @@ const BATCH_SIZE = 50;
 // Load tithi data from JSON file instead of hardcoding
 let tithiData = {};
 try {
-  const tithiDataPath = path.join(__dirname, '..', '..', 'tithis_2024_2030_basic.json');
+  // Handle both local development and Netlify serverless environments
+  const tithiDataPath = process.env.NETLIFY 
+    ? path.join(__dirname, 'tithis_2024_2030_basic.json')  // Netlify serverless path
+    : path.join(__dirname, '..', '..', 'tithis_2024_2030_basic.json'); // Local dev path
+  
+  console.log(`Trying to load tithi data from: ${tithiDataPath}`);
   const tithiDataRaw = fs.readFileSync(tithiDataPath, 'utf8');
   tithiData = JSON.parse(tithiDataRaw);
   console.log('Loaded complete tithi data from tithis_2024_2030_basic.json');
