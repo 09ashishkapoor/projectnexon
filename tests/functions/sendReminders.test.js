@@ -2,14 +2,16 @@ process.env.BREVO_API_KEY = 'test-api-key';
 process.env.SENDER_EMAIL = 'test@sender.com';
 process.env.CI = 'true'; // Ensure CI environment is detected
 
-// Mock file system before requiring any modules
-const fs = require('fs');
-jest.mock('fs', () => ({
-  ...jest.requireActual('fs'),
-  readFileSync: jest.fn()
-}));
+// Mock file system PROPERLY before requiring any modules
+jest.mock('fs', () => {
+  const originalFs = jest.requireActual('fs');
+  return {
+    ...originalFs,
+    readFileSync: jest.fn()
+  };
+});
 
-// Set up mock tithi data that will be used for tests
+// Set up mock tithi data
 const mockTithiData = {
   "2025": {
     "Ekadashi": [
@@ -21,15 +23,20 @@ const mockTithiData = {
   }
 };
 
-// Mock filesystem readFileSync to return our test data
-fs.readFileSync.mockImplementation((path, encoding) => {
-  if (path.includes('tithis_2024_2030_basic.json')) {
+// Require fs AFTER mocking it
+const fs = require('fs');
+
+// Setup the mock implementation
+fs.readFileSync.mockImplementation((filePath, options) => {
+  if (filePath.includes('tithis_2024_2030_basic.json')) {
     return JSON.stringify(mockTithiData);
   }
-  return jest.requireActual('fs').readFileSync(path, encoding);
+  // For any other files, use the actual implementation
+  const actualFs = jest.requireActual('fs');
+  return actualFs.readFileSync(filePath, options);
 });
 
-// Mock Firebase instead of Netlify Blobs
+// Mock Firebase
 jest.mock('../../config/firebase', () => {
   return {
     subscriptionStore: {
