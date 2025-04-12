@@ -49,8 +49,9 @@ exports.handler = async (event, context) => {
   try {
     // Determine target date - use environment variable for more flexibility
     const leadDays = parseInt(process.env.REMINDER_LEAD_DAYS || '2', 10);
-    const targetDate = new Date();
-    targetDate.setUTCDate(targetDate.getUTCDate() + leadDays);
+    const today = new Date();
+    const targetDate = new Date(today);
+    targetDate.setUTCDate(today.getUTCDate() + leadDays);
     const targetDateString = targetDate.toISOString().split('T')[0];
     const targetYear = targetDate.getUTCFullYear();
 
