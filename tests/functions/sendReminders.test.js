@@ -1,5 +1,33 @@
 process.env.BREVO_API_KEY = 'test-api-key';
 process.env.SENDER_EMAIL = 'test@sender.com';
+process.env.CI = 'true'; // Ensure CI environment is detected
+
+// Mock file system before requiring any modules
+const fs = require('fs');
+jest.mock('fs', () => ({
+  ...jest.requireActual('fs'),
+  readFileSync: jest.fn()
+}));
+
+// Set up mock tithi data that will be used for tests
+const mockTithiData = {
+  "2025": {
+    "Ekadashi": [
+      { "date": "2025-04-08", "full_name": "Kamada Ekadashi" }
+    ],
+    "Chaturthi": [
+      { "date": "2025-01-03", "full_name": "Test Chaturthi" }
+    ]
+  }
+};
+
+// Mock filesystem readFileSync to return our test data
+fs.readFileSync.mockImplementation((path, encoding) => {
+  if (path.includes('tithis_2024_2030_basic.json')) {
+    return JSON.stringify(mockTithiData);
+  }
+  return jest.requireActual('fs').readFileSync(path, encoding);
+});
 
 // Mock Firebase instead of Netlify Blobs
 jest.mock('../../config/firebase', () => {
@@ -33,9 +61,8 @@ jest.mock('@getbrevo/brevo', () => {
   };
 });
 
-// Import the module
+// Import the module AFTER setting up all mocks
 const sendRemindersModule = require('../../netlify/functions/sendReminders');
-const fs = require('fs');
 const path = require('path');
 const firebase = require('../../config/firebase');
 
@@ -43,7 +70,6 @@ describe('sendReminders function', () => {
   beforeEach(() => {
     // Reset mocks between tests
     jest.clearAllMocks();
-    jest.restoreAllMocks();
   });
 
   it('should send emails to matching subscribers', async () => {
