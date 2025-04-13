@@ -210,6 +210,61 @@ To view detailed logs for your functions:
 3. Select the function you want to check (e.g., sendReminders, debugReminders)
 4. Click on "Logs" to see execution details
 
+### Cron Job Status
+
+Netlify scheduled functions do not have a built-in dashboard for cron job status. To monitor the status of your scheduled functions:
+
+#### Option 1: View Function Invocation Logs
+
+1. Go to the Netlify dashboard
+2. Navigate to **Site settings** > **Functions** > **Scheduled functions**
+3. Here you can see all your scheduled functions and their execution schedule
+4. To check if they're running as expected, look at the **Function logs**
+
+#### Option 2: Implement Status Reporting
+
+Add status reporting to your system:
+
+1. Modify your scheduled functions to write to a status database (Firebase) when they run
+   ```javascript
+   // In your scheduled function:
+   const timestamp = new Date().toISOString();
+   await db.collection('cronStatus').doc('sendReminders').set({
+     lastRun: timestamp,
+     status: 'success' // or 'error' with error details
+   });
+   ```
+
+2. Create a simple status dashboard function that reads this information:
+   ```javascript
+   // Create a new function called cronStatus.js
+   exports.handler = async () => {
+     const statuses = await db.collection('cronStatus').get();
+     return {
+       statusCode: 200,
+       body: JSON.stringify(statuses.docs.map(doc => ({
+         function: doc.id,
+         lastRun: doc.data().lastRun,
+         status: doc.data().status
+       })))
+     };
+   };
+   ```
+
+3. Access this endpoint to check when your cron jobs last ran:
+   ```
+   https://simpletithireminder.netlify.app/.netlify/functions/cronStatus
+   ```
+
+#### Option 3: Use External Monitoring
+
+Set up external monitoring:
+
+1. Use a service like UptimeRobot, Pingdom, or StatusCake
+2. Create a monitoring endpoint in your app that checks when functions last ran
+3. Have the monitoring service periodically check this endpoint
+4. Set up alerts if functions haven't run in the expected timeframe
+
 ### Running Schedule
 
 The reminder function is configured to run on the following schedule:
@@ -222,3 +277,14 @@ exports.config = {
 ```
 
 You can adjust this schedule as needed once you confirm the system is working properly.
+
+### Manual Testing of Cron Jobs
+
+You can manually trigger your scheduled functions to verify they're working correctly:
+
+```bash
+# Run this command to test if the reminders function works properly
+node test_reminders.js
+```
+
+After running this test, check the function logs in Netlify to confirm execution details and any errors that may have occurred.

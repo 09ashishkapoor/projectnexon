@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const SibApiV3Sdk = require('@getbrevo/brevo');
 const { subscriptionStore } = require('../../config/firebase');
+const { logCronExecution } = require('./cronStatus');
 
 // Initialize Brevo API instance
 const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
@@ -43,10 +44,24 @@ try {
   };
 }
 
-exports.handler = async (event, context) => {
+// Main handler function - processes both direct invocations and scheduled runs
+const handler = async (req) => {
   console.log('sendReminders function triggered.');
   
+  // For scheduled functions, log the next run time if available
   try {
+    const body = await req.json().catch(() => ({}));
+    if (body && body.next_run) {
+      console.log(`Next scheduled run at: ${body.next_run}`);
+    }
+  } catch (error) {
+    // Ignore JSON parsing errors - may not be a scheduled invocation
+  }
+  
+  try {
+    // Log the start of execution
+    await logCronExecution('sendReminders', 'running', { startTime: new Date().toISOString() });
+
     // Determine target date - use environment variable for more flexibility
     const leadDays = parseInt(process.env.REMINDER_LEAD_DAYS || '2', 10);
     const today = new Date();
@@ -76,14 +91,24 @@ exports.handler = async (event, context) => {
 
     if (!upcomingTithis.length) {
       console.log(`No Tithis found for target date ${targetDateString}`);
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ 
+      
+      // Log completion
+      await logCronExecution('sendReminders', 'success', {
+        message: 'No tithis found for target date',
+        targetDate: targetDateString
+      });
+      
+      return new Response(
+        JSON.stringify({ 
           message: 'No Tithis found for target date.',
           targetDate: targetDateString,
           leadDays: leadDays
         }),
-      };
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
     }
 
     console.log(`Found ${upcomingTithis.length} upcoming Tithis for ${targetDateString}: ${upcomingTithis.map(t => t.name).join(', ')}`);
@@ -123,14 +148,25 @@ exports.handler = async (event, context) => {
 
     if (!subscribersToNotify.length) {
       console.log(`No subscribers found for upcoming Tithis on ${targetDateString}`);
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ 
+      
+      // Log completion
+      await logCronExecution('sendReminders', 'success', {
+        message: 'No subscribers found for upcoming tithis',
+        tithiCount: upcomingTithis.length,
+        targetDate: targetDateString
+      });
+      
+      return new Response(
+        JSON.stringify({ 
           message: 'No subscribers found for upcoming Tithis.', 
           tithiCount: upcomingTithis.length,
           subscriberCount: subscriberKeys.length 
         }),
-      };
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
     }
 
     // Send emails
@@ -184,30 +220,54 @@ exports.handler = async (event, context) => {
     const failureCount = emailResults.filter(r => r.status === 'rejected').length;
 
     console.log(`Email sending completed. Success: ${successCount}, Failed: ${failureCount}`);
-
-    return {
-      statusCode: failureCount ? 500 : 200,
-      body: JSON.stringify({
+    
+    // Log successful completion
+    await logCronExecution('sendReminders', 'success', {
+      tithisFound: upcomingTithis.length,
+      subscribersNotified: subscribersToNotify.length,
+      emailsSent: successCount,
+      emailsFailed: failureCount,
+      targetDate: targetDateString
+    });
+    
+    return new Response(
+      JSON.stringify({
         message: `Reminder process complete. Successful: ${successCount}, Failed: ${failureCount}`,
         totalSubscribers: subscribersToNotify.length,
         targetDate: targetDateString
       }),
-    };
+      {
+        status: failureCount ? 500 : 200,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
 
   } catch (error) {
     console.error('Error in sendReminders function:', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
+    
+    // Log the error
+    await logCronExecution('sendReminders', 'error', {
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+    
+    return new Response(
+      JSON.stringify({
         message: 'Error processing reminders',
         error: process.env.NODE_ENV === 'development' ? error.message : undefined
       }),
-    };
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
   }
 };
 
-// Export schedule configuration
-exports.config = {
-  // Run more frequently for testing until we confirm it's working
-  schedule: "0 */4 * * *" // run every 4 hours (6 times per day)
+// Export the handler as the default export for modern Netlify Functions
+export default handler;
+
+// Export the schedule configuration
+export const config = {
+  schedule: "@hourly" // Run every hour (using Netlify's supported cron extension)
 };
