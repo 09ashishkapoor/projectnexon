@@ -2,7 +2,16 @@ const fs = require('fs');
 const path = require('path');
 const SibApiV3Sdk = require('@getbrevo/brevo');
 const { subscriptionStore } = require('../../config/firebase');
-const { logCronExecution } = require('./cronStatus');
+
+// Try to load cronStatus in a way that works for both CommonJS and ES modules
+let logCronExecution;
+try {
+  const cronStatus = require('./cronStatus');
+  logCronExecution = cronStatus.logCronExecution;
+} catch (error) {
+  // If module loading fails, provide a fallback
+  logCronExecution = async () => console.log('Cron logging not available');
+}
 
 // Initialize Brevo API instance
 const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
@@ -44,13 +53,17 @@ try {
   };
 }
 
-// Main handler function - processes both direct invocations and scheduled runs
-const handler = async (req) => {
+/**
+ * Main handler function that runs when the function is triggered
+ * Works with both direct HTTP requests and scheduled invocations
+ */
+async function handler(event, context) {
   console.log('sendReminders function triggered.');
   
   // For scheduled functions, log the next run time if available
   try {
-    const body = await req.json().catch(() => ({}));
+    // Handle both event formats (Netlify scheduled function and direct HTTP request)
+    const body = event.body ? JSON.parse(event.body) : event;
     if (body && body.next_run) {
       console.log(`Next scheduled run at: ${body.next_run}`);
     }
@@ -98,17 +111,14 @@ const handler = async (req) => {
         targetDate: targetDateString
       });
       
-      return new Response(
-        JSON.stringify({ 
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ 
           message: 'No Tithis found for target date.',
           targetDate: targetDateString,
           leadDays: leadDays
-        }),
-        {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
+        })
+      };
     }
 
     console.log(`Found ${upcomingTithis.length} upcoming Tithis for ${targetDateString}: ${upcomingTithis.map(t => t.name).join(', ')}`);
@@ -156,17 +166,14 @@ const handler = async (req) => {
         targetDate: targetDateString
       });
       
-      return new Response(
-        JSON.stringify({ 
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ 
           message: 'No subscribers found for upcoming Tithis.', 
           tithiCount: upcomingTithis.length,
           subscriberCount: subscriberKeys.length 
-        }),
-        {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
+        })
+      };
     }
 
     // Send emails
@@ -230,17 +237,14 @@ const handler = async (req) => {
       targetDate: targetDateString
     });
     
-    return new Response(
-      JSON.stringify({
+    return {
+      statusCode: failureCount ? 500 : 200,
+      body: JSON.stringify({
         message: `Reminder process complete. Successful: ${successCount}, Failed: ${failureCount}`,
         totalSubscribers: subscribersToNotify.length,
         targetDate: targetDateString
-      }),
-      {
-        status: failureCount ? 500 : 200,
-        headers: { 'Content-Type': 'application/json' }
-      }
-    );
+      })
+    };
 
   } catch (error) {
     console.error('Error in sendReminders function:', error);
@@ -251,23 +255,20 @@ const handler = async (req) => {
       timestamp: new Date().toISOString()
     });
     
-    return new Response(
-      JSON.stringify({
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
         message: 'Error processing reminders',
         error: process.env.NODE_ENV === 'development' ? error.message : undefined
-      }),
-      {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      }
-    );
+      })
+    };
   }
-};
+}
 
-// Export the handler as the default export for modern Netlify Functions
-export default handler;
+// Export the handler for CommonJS compatibility (for tests)
+exports.handler = handler;
 
-// Export the schedule configuration
-export const config = {
+// Also export the schedule configuration for Netlify
+exports.config = {
   schedule: "@hourly" // Run every hour (using Netlify's supported cron extension)
 };

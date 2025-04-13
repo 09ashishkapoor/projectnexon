@@ -15,7 +15,7 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 // Function to log cron job execution to Firestore
-export const logCronExecution = async (functionName, status, details) => {
+const logCronExecution = async (functionName, status, details) => {
   try {
     await db.collection('cronExecutions').doc(functionName).set({
       lastRun: admin.firestore.FieldValue.serverTimestamp(),
@@ -31,11 +31,16 @@ export const logCronExecution = async (functionName, status, details) => {
   }
 };
 
+// Export the logging function so other modules can use it
+exports.logCronExecution = logCronExecution;
+
 // Main handler for the cronStatus endpoint
-export default async (req) => {
+const handler = async (event, context) => {
   // For scheduled runs, log the next run time
   try {
-    const body = await req.json().catch(() => ({}));
+    // Handle both event formats (Netlify scheduled function and direct HTTP request)
+    const body = event.body ? JSON.parse(event.body) : event;
+    
     if (body && body.next_run) {
       console.log(`CronStatus next scheduled run at: ${body.next_run}`);
       
@@ -60,33 +65,32 @@ export default async (req) => {
       });
     });
     
-    return new Response(
-      JSON.stringify({
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
         message: 'Cron job statuses retrieved successfully',
         cronJobs: results
       }),
-      {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' }
-      }
-    );
+      headers: { 'Content-Type': 'application/json' }
+    };
   } catch (error) {
     console.error('Error retrieving cron job statuses:', error);
     
-    return new Response(
-      JSON.stringify({
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
         message: 'Failed to retrieve cron job statuses',
         error: process.env.NODE_ENV === 'development' ? error.message : 'Server error'
       }),
-      {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      }
-    );
+      headers: { 'Content-Type': 'application/json' }
+    };
   }
 };
 
+// Export the handler for CommonJS compatibility
+exports.handler = handler;
+
 // Set up a schedule for this function itself to ensure at least this one runs
-export const config = {
+exports.config = {
   schedule: "@hourly" // Run every hour as a heartbeat check
 };
