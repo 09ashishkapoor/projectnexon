@@ -270,5 +270,5 @@ exports.handler = handler;
 
 // Also export the schedule configuration for Netlify
 exports.config = {
-  schedule: "@hourly" // Run every hour (using Netlify's supported cron extension)
+  schedule: "@daily" // Run once a day at midnight UTC
 };

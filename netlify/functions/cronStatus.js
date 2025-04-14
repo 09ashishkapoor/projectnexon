@@ -92,5 +92,5 @@ exports.handler = handler;
 
 // Set up a schedule for this function itself to ensure at least this one runs
 exports.config = {
-  schedule: "@hourly" // Run every hour as a heartbeat check
+  schedule: "@daily" // Run once a day as a heartbeat check
 };
