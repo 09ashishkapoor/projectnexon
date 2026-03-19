@@ -110,7 +110,24 @@
     if (ev.source_links && ev.source_links.length > 0) {
       lines.push(icsWrapLine(`URL:${ev.source_links[0]}`));
     }
-    lines.push('END:VEVENT');
+    lines.push(
+      'BEGIN:VALARM',
+      'TRIGGER:-P1W',
+      'ACTION:DISPLAY',
+      icsWrapLine(`DESCRIPTION:Reminder: ${icsTxt(ev.title)} is in 1 week`),
+      'END:VALARM',
+      'BEGIN:VALARM',
+      'TRIGGER:-P3D',
+      'ACTION:DISPLAY',
+      icsWrapLine(`DESCRIPTION:Reminder: ${icsTxt(ev.title)} is in 3 days`),
+      'END:VALARM',
+      'BEGIN:VALARM',
+      'TRIGGER:-P1D',
+      'ACTION:DISPLAY',
+      icsWrapLine(`DESCRIPTION:Reminder: ${icsTxt(ev.title)} is tomorrow`),
+      'END:VALARM',
+      'END:VEVENT'
+    );
     return lines.join('\r\n');
   }
 
