@@ -1,0 +1,258 @@
+[
+  {
+    "date": "2024-03-25",
+    "kind": "lunar",
+    "eclipse_type": "penumbral",
+    "td_greatest_eclipse_utc": "07:13:59",
+    "visibility": "Americas",
+    "source": "NASA LEdecade2021"
+  },
+  {
+    "date": "2024-04-08",
+    "kind": "solar",
+    "eclipse_type": "total",
+    "td_greatest_eclipse_utc": "18:18:29",
+    "visibility": "North America, Central America",
+    "source": "NASA SEdecade2021"
+  },
+  {
+    "date": "2024-09-18",
+    "kind": "lunar",
+    "eclipse_type": "partial",
+    "td_greatest_eclipse_utc": "02:45:25",
+    "visibility": "Americas, Europe, Africa",
+    "source": "NASA LEdecade2021"
+  },
+  {
+    "date": "2024-10-02",
+    "kind": "solar",
+    "eclipse_type": "annular",
+    "td_greatest_eclipse_utc": "18:46:13",
+    "visibility": "Pacific, Southern South America",
+    "source": "NASA SEdecade2021"
+  },
+  {
+    "date": "2025-03-14",
+    "kind": "lunar",
+    "eclipse_type": "total",
+    "td_greatest_eclipse_utc": "06:59:56",
+    "visibility": "Pacific, Americas, Western Europe, Western Africa",
+    "source": "NASA LEdecade2021"
+  },
+  {
+    "date": "2025-03-29",
+    "kind": "solar",
+    "eclipse_type": "partial",
+    "td_greatest_eclipse_utc": "10:48:36",
+    "visibility": "Northwest Africa, Europe, Northern Russia",
+    "source": "NASA SEdecade2021"
+  },
+  {
+    "date": "2025-09-07",
+    "kind": "lunar",
+    "eclipse_type": "total",
+    "td_greatest_eclipse_utc": "18:12:58",
+    "visibility": "Europe, Africa, Asia, Australia",
+    "source": "NASA LEdecade2021"
+  },
+  {
+    "date": "2025-09-21",
+    "kind": "solar",
+    "eclipse_type": "partial",
+    "td_greatest_eclipse_utc": "19:43:04",
+    "visibility": "South Pacific, New Zealand, Antarctica",
+    "source": "NASA SEdecade2021"
+  },
+  {
+    "date": "2026-02-17",
+    "kind": "solar",
+    "eclipse_type": "annular",
+    "td_greatest_eclipse_utc": "12:13:05",
+    "visibility": "Southern Argentina and Chile, Southern Africa, Antarctica",
+    "source": "NASA SEdecade2021"
+  },
+  {
+    "date": "2026-03-03",
+    "kind": "lunar",
+    "eclipse_type": "total",
+    "td_greatest_eclipse_utc": "11:34:52",
+    "visibility": "East Asia, Australia, Pacific, Americas",
+    "source": "NASA LEdecade2021"
+  },
+  {
+    "date": "2026-08-12",
+    "kind": "solar",
+    "eclipse_type": "total",
+    "td_greatest_eclipse_utc": "17:47:05",
+    "visibility": "Northern North America, Western Africa, Europe",
+    "source": "NASA SEdecade2021"
+  },
+  {
+    "date": "2026-08-28",
+    "kind": "lunar",
+    "eclipse_type": "partial",
+    "td_greatest_eclipse_utc": "04:14:04",
+    "visibility": "East Pacific, Americas, Europe, Africa",
+    "source": "NASA LEdecade2021"
+  },
+  {
+    "date": "2027-02-06",
+    "kind": "solar",
+    "eclipse_type": "annular",
+    "td_greatest_eclipse_utc": "16:00:47",
+    "visibility": "South America, Antarctica, Western and Southern Africa",
+    "source": "NASA SEdecade2021"
+  },
+  {
+    "date": "2027-02-20",
+    "kind": "lunar",
+    "eclipse_type": "penumbral",
+    "td_greatest_eclipse_utc": "23:14:06",
+    "visibility": "Americas, Europe, Africa, Asia",
+    "source": "NASA LEdecade2021"
+  },
+  {
+    "date": "2027-07-18",
+    "kind": "lunar",
+    "eclipse_type": "penumbral",
+    "td_greatest_eclipse_utc": "16:04:09",
+    "visibility": "East Africa, Asia, Australia, Pacific",
+    "source": "NASA LEdecade2021"
+  },
+  {
+    "date": "2027-08-02",
+    "kind": "solar",
+    "eclipse_type": "total",
+    "td_greatest_eclipse_utc": "10:07:49",
+    "visibility": "Africa, Europe, Middle East, Western and Southern Asia",
+    "source": "NASA SEdecade2021"
+  },
+  {
+    "date": "2027-08-17",
+    "kind": "lunar",
+    "eclipse_type": "penumbral",
+    "td_greatest_eclipse_utc": "07:14:59",
+    "visibility": "Pacific, Americas",
+    "source": "NASA LEdecade2021"
+  },
+  {
+    "date": "2028-01-12",
+    "kind": "lunar",
+    "eclipse_type": "partial",
+    "td_greatest_eclipse_utc": "04:14:13",
+    "visibility": "Americas, Europe, Africa",
+    "source": "NASA LEdecade2021"
+  },
+  {
+    "date": "2028-01-26",
+    "kind": "solar",
+    "eclipse_type": "annular",
+    "td_greatest_eclipse_utc": "15:08:58",
+    "visibility": "Eastern North America, Central and South America, Western Europe, Northwest Africa",
+    "source": "NASA SEdecade2021"
+  },
+  {
+    "date": "2028-07-06",
+    "kind": "lunar",
+    "eclipse_type": "partial",
+    "td_greatest_eclipse_utc": "18:20:57",
+    "visibility": "Europe, Africa, Asia, Australia",
+    "source": "NASA LEdecade2021"
+  },
+  {
+    "date": "2028-07-22",
+    "kind": "solar",
+    "eclipse_type": "total",
+    "td_greatest_eclipse_utc": "02:56:39",
+    "visibility": "Southeast Asia, East Indies, Australia, New Zealand",
+    "source": "NASA SEdecade2021"
+  },
+  {
+    "date": "2028-12-31",
+    "kind": "lunar",
+    "eclipse_type": "total",
+    "td_greatest_eclipse_utc": "16:53:15",
+    "visibility": "Europe, Africa, Asia, Australia, Pacific",
+    "source": "NASA LEdecade2021"
+  },
+  {
+    "date": "2029-01-14",
+    "kind": "solar",
+    "eclipse_type": "partial",
+    "td_greatest_eclipse_utc": "17:13:47",
+    "visibility": "North America, Central America",
+    "source": "NASA SEdecade2021"
+  },
+  {
+    "date": "2029-06-12",
+    "kind": "solar",
+    "eclipse_type": "partial",
+    "td_greatest_eclipse_utc": "04:06:13",
+    "visibility": "Arctic, Scandinavia, Alaska, Northern Asia, Northern Canada",
+    "source": "NASA SEdecade2021"
+  },
+  {
+    "date": "2029-06-26",
+    "kind": "lunar",
+    "eclipse_type": "total",
+    "td_greatest_eclipse_utc": "03:23:22",
+    "visibility": "Americas, Europe, Africa, Middle East",
+    "source": "NASA LEdecade2021"
+  },
+  {
+    "date": "2029-07-11",
+    "kind": "solar",
+    "eclipse_type": "partial",
+    "td_greatest_eclipse_utc": "15:37:18",
+    "visibility": "Southern Chile, Southern Argentina",
+    "source": "NASA SEdecade2021"
+  },
+  {
+    "date": "2029-12-05",
+    "kind": "solar",
+    "eclipse_type": "partial",
+    "td_greatest_eclipse_utc": "15:03:57",
+    "visibility": "Southern Argentina, Southern Chile, Antarctica",
+    "source": "NASA SEdecade2021"
+  },
+  {
+    "date": "2029-12-20",
+    "kind": "lunar",
+    "eclipse_type": "total",
+    "td_greatest_eclipse_utc": "22:43:12",
+    "visibility": "Americas, Europe, Africa, Asia",
+    "source": "NASA LEdecade2021"
+  },
+  {
+    "date": "2030-06-01",
+    "kind": "solar",
+    "eclipse_type": "annular",
+    "td_greatest_eclipse_utc": "06:29:13",
+    "visibility": "Europe, North Africa, Middle East, Asia, Arctic, Alaska",
+    "source": "NASA SEdecade2021"
+  },
+  {
+    "date": "2030-06-15",
+    "kind": "lunar",
+    "eclipse_type": "partial",
+    "td_greatest_eclipse_utc": "18:34:34",
+    "visibility": "Europe, Africa, Asia, Australia",
+    "source": "NASA LEdecade2021"
+  },
+  {
+    "date": "2030-11-25",
+    "kind": "solar",
+    "eclipse_type": "total",
+    "td_greatest_eclipse_utc": "06:51:37",
+    "visibility": "Southern Africa, Southern Indian Ocean, East Indies, Australia, Antarctica",
+    "source": "NASA SEdecade2021"
+  },
+  {
+    "date": "2030-12-09",
+    "kind": "lunar",
+    "eclipse_type": "penumbral",
+    "td_greatest_eclipse_utc": "22:28:51",
+    "visibility": "Americas, Europe, Africa, Asia",
+    "source": "NASA LEdecade2021"
+  }
+]

@@ -1,0 +1,676 @@
+/* Modern UI for Tithi Reminders - Dark Mode */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary-color: #ff3b3b;
+  --primary-hover: #ff6b6b;
+  --dark-bg: #121212;
+  --container-bg: #1e1e1e;
+  --card-bg: #252525;
+  --input-bg: #2a2a2a;
+  --border-color: #444;
+  --text-light: #eee;
+  --text-primary: #ffffff;
+  --text-muted: #aaa;
+  --success-bg: #264d26;
+  --success-color: #aaffaa;
+  --error-bg: #5c1a1a;
+  --error-color: #ffaaaa;
+  --transition: all 0.3s ease;
+  --shadow: 0 4px 20px rgba(255, 59, 59, 0.25);
+  --card-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* General styles */
+body {
+  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: var(--text-light);
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #121212 0%, #2d2d2d 100%);
+  min-height: 100vh;
+  background-attachment: fixed;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-image: url('https://static.vecteezy.com/system/resources/previews/002/099/443/original/mountain-beautiful-landscape-background-design-illustration-free-vector.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.2;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: rgba(30, 30, 30, 0.92);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, var(--primary-color), #ff9966);
+}
+
+h1 {
+  color: var(--primary-color);
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 2.2rem;
+  position: relative;
+  padding-bottom: 15px;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+h1:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background-color: var(--primary-color);
+  box-shadow: 0 0 10px rgba(255, 59, 59, 0.5);
+  border-radius: 2px;
+}
+
+p {
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 1.05rem;
+  font-weight: 300;
+}
+
+/* Form styles */
+form {
+  margin-top: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--text-light);
+}
+
+input[type="email"],
+select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-sizing: border-box;
+  background-color: var(--input-bg);
+  color: var(--text-light);
+}
+
+input[type="email"]:focus,
+select:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 59, 59, 0.2);
+}
+
+input[type="email"]::placeholder {
+  color: var(--text-muted);
+}
+
+button {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: var(--transition);
+  display: block;
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(255, 59, 59, 0.3);
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+button:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.6s;
+  z-index: -1;
+}
+
+button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 59, 59, 0.4);
+}
+
+button:hover:before {
+  left: 100%;
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 59, 59, 0.3);
+}
+
+button:disabled {
+  background: linear-gradient(45deg, #444, #666);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Tithi checkbox grid */
+.tithi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+  padding: 15px;
+  background-color: rgba(40, 40, 40, 0.7);
+  border-radius: 8px;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.tithi-checkbox {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: var(--card-bg);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  border-left: 3px solid transparent;
+}
+
+.tithi-checkbox:hover {
+  background-color: rgba(50, 50, 50, 0.9);
+  border-left-color: var(--primary-color);
+  transform: translateX(2px);
+}
+
+.tithi-checkbox input {
+  margin-right: 10px;
+  accent-color: var(--primary-color);
+  transform: scale(1.2);
+}
+
+.tithi-checkbox label {
+  color: var(--text-primary);
+  font-weight: 400;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
+}
+
+small {
+  display: block;
+  margin-top: 8px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* Message styles */
+.message-area {
+  margin-top: 1.5rem;
+  padding: 0;
+}
+
+.message {
+  padding: 15px;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  animation: slideIn 0.3s ease-out;
+}
+
+.success {
+  background-color: var(--success-bg);
+  border-left: 4px solid var(--success-color);
+  color: var(--success-color);
+}
+
+.error {
+  background-color: var(--error-bg);
+  border-left: 4px solid var(--error-color);
+  color: var(--error-color);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Feedback button styling */
+.feedback-btn {
+  display: inline-block;
+  background-color: rgba(40, 40, 40, 0.7);
+  color: var(--text-muted);
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: var(--transition);
+  border: 1px solid var(--border-color);
+}
+
+.feedback-btn:hover {
+  background-color: rgba(50, 50, 50, 0.9);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.feedback-icon {
+  margin-right: 6px;
+}
+
+/* Card styles */
+.card {
+  background-color: rgba(40, 40, 40, 0.9);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-left: 4px solid var(--primary-color);
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+.card-title {
+  color: var(--primary-color);
+  margin-top: 0;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Icons within the form */
+form .fas {
+  color: var(--primary-color);
+  margin-right: 5px;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding-top: 25px;
+  margin-top: 25px;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+footer a {
+  color: var(--text-muted);
+  margin: 0 15px;
+  text-decoration: none;
+  transition: color 0.3s;
+  position: relative;
+}
+
+footer a:hover {
+  color: var(--primary-color);
+}
+
+footer a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -3px;
+  left: 0;
+  background-color: var(--primary-color);
+  transition: width 0.3s ease;
+}
+
+footer a:hover::after {
+  width: 100%;
+}
+
+/* Tab styling */
+.tab-navigation {
+  display: flex;
+  margin-bottom: 25px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.tab-button {
+  flex: 1;
+  padding: 15px;
+  background-color: var(--card-bg);
+  color: var(--text-muted);
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.tab-button:hover {
+  background-color: rgba(50, 50, 50, 0.9);
+  transform: none;
+  color: var(--text-light);
+}
+
+.tab-button.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background-color: var(--primary-color);
+}
+
+.tab-pane {
+  display: none;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+/* Add a simple fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Calendar/Special Days Styling */
+.calendar-container {
+  background-color: rgba(35, 35, 35, 0.9);
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.calendar-container h2 {
+    color: var(--text-light);
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.8rem;
+}
+
+.calendar-section {
+  margin-bottom: 35px;
+}
+
+.calendar-section h3 {
+  color: var(--primary-color);
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+}
+
+.special-days-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 15px;
+}
+
+.tithi-card {
+  border: none;
+  border-radius: 10px;
+  padding: 18px;
+  background-color: var(--card-bg);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: var(--transition);
+}
+
+.tithi-card.has-festival {
+  border-left: 4px solid var(--primary-color);
+  background-color: rgba(50, 35, 35, 0.95);
+}
+
+.tithi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+.festival-name {
+  color: var(--primary-color);
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+}
+
+.tithi-date {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.tithi-date:before {
+  content: "\f133"; /* Calendar icon from Font Awesome */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  margin-right: 5px;
+  color: var(--text-muted);
+}
+
+.tithi-name {
+  font-weight: bold;
+  margin: 5px 0;
+  color: var(--text-light);
+}
+
+/* Loading styles */
+.loading-text {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 20px;
+}
+
+/* Subscription Status Styles */
+.subscription-details {
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+.subscription-details.hidden {
+    display: none;
+}
+
+.subscription-details h3 {
+    color: var(--text-light);
+    margin-bottom: 15px;
+}
+
+.subscription-info-box {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    color: var(--text-light);
+}
+
+.subscription-info-box p {
+    margin: 10px 0;
+    color: var(--text-light);
+    text-align: left;
+}
+
+.active-status {
+    background-color: #4caf50;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.9em;
+    display: inline-block;
+}
+
+.subscribed-tithis-list {
+    background-color: rgba(40, 40, 40, 0.7);
+    padding: 15px 15px 15px 35px;
+    border-radius: 5px;
+    margin: 10px 0;
+    max-height: 200px;
+    overflow-y: auto;
+    columns: 2;
+    color: var(--text-primary);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
+}
+
+.subscribed-tithis-list li {
+    margin-bottom: 5px;
+    color: var(--text-primary);
+}
+
+.subscription-actions {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+    text-align: right;
+}
+
+.unsubscribe-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 0.9em;
+    padding: 5px 10px;
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.unsubscribe-link:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+@media (max-width: 600px) {
+    .subscribed-tithis-list {
+        columns: 1;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    margin: 20px;
+    padding: 20px;
+  }
+  
+  .tithi-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+  
+  h1 {
+    font-size: 1.8rem;
+  }
+  
+  .special-days-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    margin: 10px;
+    padding: 15px;
+  }
+  
+  button {
+    padding: 12px 15px;
+  }
+  
+  .calendar-container {
+    padding: 15px;
+  }
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dark-bg);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color);
+}
+
+/* Glowing effects for special elements */
+.card-title i, 
+h1 i, 
+label i {
+  filter: drop-shadow(0 0 3px rgba(255, 59, 59, 0.4));
+}
+
+/* Add subtle pulse animation to important buttons */
+@keyframes subtle-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 59, 59, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(255, 59, 59, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 59, 59, 0); }
+}
+
+#submit-button {
+  animation: subtle-pulse 2s infinite;
+}
