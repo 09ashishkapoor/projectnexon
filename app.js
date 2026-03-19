@@ -91,37 +91,26 @@
   /** Build a single VEVENT block */
   function buildVEvent(ev) {
     const dtstart = icsDate(ev.date);
-    const dtend   = icsDate(ev.date_end || ev.date);
     // For multi-day events, ICS end date is exclusive — add 1 day
     const endDateExclusive = ev.date_end
       ? icsDate(addDaysToDateStr(ev.date_end, 1))
       : icsDate(addDaysToDateStr(ev.date, 1));
+    const now = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+Z/, 'Z');
 
     const lines = [
       'BEGIN:VEVENT',
-      icsWrapLine(`UID:${ev.id}`),
+      icsWrapLine(`UID:${ev.id}@bhairava-kali-calendar`),
+      `DTSTAMP:${now}`,
       icsWrapLine(`DTSTART;VALUE=DATE:${dtstart}`),
       icsWrapLine(`DTEND;VALUE=DATE:${endDateExclusive}`),
       icsWrapLine(`SUMMARY:${icsTxt(ev.title)}`),
       icsWrapLine(`DESCRIPTION:${icsTxt(ev.description_short + '\\n\\n' + ev.significance)}`),
       icsWrapLine(`CATEGORIES:${icsTxt(catLabel(ev.category))}`),
-      'BEGIN:VALARM',
-      'TRIGGER:-P1W',
-      'ACTION:DISPLAY',
-      icsWrapLine(`DESCRIPTION:Reminder: ${icsTxt(ev.title)} is in 1 week`),
-      'END:VALARM',
-      'BEGIN:VALARM',
-      'TRIGGER:-P3D',
-      'ACTION:DISPLAY',
-      icsWrapLine(`DESCRIPTION:Reminder: ${icsTxt(ev.title)} is in 3 days`),
-      'END:VALARM',
-      'BEGIN:VALARM',
-      'TRIGGER:-P1D',
-      'ACTION:DISPLAY',
-      icsWrapLine(`DESCRIPTION:Reminder: ${icsTxt(ev.title)} is tomorrow`),
-      'END:VALARM',
-      'END:VEVENT',
     ];
+    if (ev.source_links && ev.source_links.length > 0) {
+      lines.push(icsWrapLine(`URL:${ev.source_links[0]}`));
+    }
+    lines.push('END:VEVENT');
     return lines.join('\r\n');
   }
 
