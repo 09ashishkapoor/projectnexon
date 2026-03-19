@@ -114,17 +114,7 @@
       'BEGIN:VALARM',
       'TRIGGER:-P1W',
       'ACTION:DISPLAY',
-      icsWrapLine(`DESCRIPTION:Reminder: ${icsTxt(ev.title)} is in 1 week`),
-      'END:VALARM',
-      'BEGIN:VALARM',
-      'TRIGGER:-P3D',
-      'ACTION:DISPLAY',
-      icsWrapLine(`DESCRIPTION:Reminder: ${icsTxt(ev.title)} is in 3 days`),
-      'END:VALARM',
-      'BEGIN:VALARM',
-      'TRIGGER:-P1D',
-      'ACTION:DISPLAY',
-      icsWrapLine(`DESCRIPTION:Reminder: ${icsTxt(ev.title)} is tomorrow`),
+      icsWrapLine(`DESCRIPTION:Heads up: ${icsTxt(ev.title)} is in 1 week`),
       'END:VALARM',
       'END:VEVENT'
     );
