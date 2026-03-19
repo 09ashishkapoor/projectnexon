@@ -1,676 +1,642 @@
-/* Modern UI for Tithi Reminders - Dark Mode */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+/* ============================================================
+   Bhairava Baba and Ma Adya Mahakali Upasana Calendar — Style Sheet
+   ============================================================ */
 
+/* --- Google Font import handled via <link> in HTML head for performance --- */
+
+/* Fallback font metric overrides — match EB Garamond and Inter dimensions
+   so the fallback fonts occupy the same space, preventing reflow on font swap. */
+@font-face {
+  font-family: 'EB Garamond';
+  src: local('Georgia');
+  size-adjust: 107%;
+  ascent-override: 88%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Inter';
+  src: local('system-ui');
+  size-adjust: 100%;
+  ascent-override: 90%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+}
+
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
 :root {
-  --primary-color: #ff3b3b;
-  --primary-hover: #ff6b6b;
-  --dark-bg: #121212;
-  --container-bg: #1e1e1e;
-  --card-bg: #252525;
-  --input-bg: #2a2a2a;
-  --border-color: #444;
-  --text-light: #eee;
-  --text-primary: #ffffff;
-  --text-muted: #aaa;
-  --success-bg: #264d26;
-  --success-color: #aaffaa;
-  --error-bg: #5c1a1a;
-  --error-color: #ffaaaa;
-  --transition: all 0.3s ease;
-  --shadow: 0 4px 20px rgba(255, 59, 59, 0.25);
-  --card-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  /* Background layers — deep maroon palette */
+  --bg-base:       #0D0506;
+  --bg-surface:    #180A0F;
+  --bg-card:       #180A0F;
+  --bg-card-hover: #241015;
+
+  /* Borders */
+  --border-subtle: rgba(139,38,53,0.28);
+  --border-mid:    rgba(232,196,104,0.35);
+
+  /* Text */
+  --text-primary:  #F0DCC8;
+  --text-secondary:#C9A962;
+  --text-muted:    #B89878;
+
+  /* Accent: Bhairava — sacred crimson */
+  --bhairava:      #8B2635;
+  --bhairava-glow: rgba(139,38,53,0.28);
+
+  /* Accent: Kali — deep wine */
+  --kali:          #6B1825;
+  --kali-glow:     rgba(107,24,37,0.30);
+
+  /* Accent: Navaratri — temple gold */
+  --navaratri:     #C9A962;
+  --navaratri-glow:rgba(201,169,98,0.25);
+
+  /* Accent: Eclipse — muted sage-teal */
+  --eclipse:       #4A7A82;
+  --eclipse-glow:  rgba(74,122,130,0.25);
+
+  /* Spacing */
+  --gap-xs: 0.3rem;
+  --gap-sm: 0.6rem;
+  --gap-md: 1rem;
+  --gap-lg: 1.6rem;
+  --gap-xl: 2.4rem;
+
+  /* Typography */
+  --font-serif: 'EB Garamond', Georgia, serif;
+  --font-sans:  'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Misc */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --transition: 0.2s ease;
 }
 
-/* General styles */
+/* ============================================================
+   RESET + BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
 body {
-  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--font-sans);
+  background-color: var(--bg-base);
+  color: var(--text-primary);
   line-height: 1.6;
-  color: var(--text-light);
-  margin: 0;
-  padding: 0;
-  background: linear-gradient(135deg, #121212 0%, #2d2d2d 100%);
   min-height: 100vh;
-  background-attachment: fixed;
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
+a { color: var(--text-secondary); text-decoration: none; transition: color var(--transition); }
+a:hover { color: var(--text-primary); }
+
+/* Prose links must be underlined to be distinguishable without relying on color alone */
+p a {
+  color: #E8C468;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-color: rgba(232,196,104,0.45);
+}
+p a:hover {
+  color: #F4E4C1;
+  text-decoration-color: #F4E4C1;
+}
+
+/* ============================================================
+   SITE HEADER
+   ============================================================ */
+.site-header {
+  background: linear-gradient(180deg, #0D0506 0%, #180A0F 100%);
+  border-bottom: 1px solid var(--border-mid);
+  padding: var(--gap-lg) var(--gap-xl);
+}
+
+.header-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-md);
+  flex-wrap: wrap;
+}
+
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-sm);
+  flex-shrink: 0;
+}
+
+/* Circular deity medallion */
+.kali-medallion {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(232,196,104,0.55);
+  box-shadow: 0 0 18px rgba(139,38,53,0.55), 0 0 6px rgba(232,196,104,0.2);
+  flex-shrink: 0;
+}
+
+.kali-medallion-img {
+  display: block;
   width: 100%;
   height: 100%;
-  z-index: -1;
-  background-image: url('https://static.vecteezy.com/system/resources/previews/002/099/443/original/mountain-beautiful-landscape-background-design-illustration-free-vector.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: 0.2;
+  object-fit: cover;
+  object-position: center 15%;
+  filter: brightness(0.92) saturate(1.05);
 }
 
-.container {
-  max-width: 1000px;
-  margin: 40px auto;
-  padding: 30px;
-  background-color: rgba(30, 30, 30, 0.92);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-  position: relative;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 5px;
-  background: linear-gradient(90deg, var(--primary-color), #ff9966);
-}
-
-h1 {
-  color: var(--primary-color);
-  text-align: center;
-  margin-bottom: 1rem;
-  font-size: 2.2rem;
-  position: relative;
-  padding-bottom: 15px;
-  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-}
-
-h1:after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 3px;
-  background-color: var(--primary-color);
-  box-shadow: 0 0 10px rgba(255, 59, 59, 0.5);
-  border-radius: 2px;
-}
-
-p {
-  color: var(--text-muted);
-  text-align: center;
-  margin-bottom: 30px;
-  font-size: 1.05rem;
-  font-weight: 300;
-}
-
-/* Form styles */
-form {
-  margin-top: 1.5rem;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-label {
-  display: block;
-  margin-bottom: 8px;
+.header-title h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
   font-weight: 500;
-  color: var(--text-light);
+  color: #E8C468;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
 }
 
-input[type="email"],
-select {
-  width: 100%;
-  padding: 12px 15px;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  box-sizing: border-box;
-  background-color: var(--input-bg);
-  color: var(--text-light);
-}
-
-input[type="email"]:focus,
-select:focus {
-  border-color: var(--primary-color);
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(255, 59, 59, 0.2);
-}
-
-input[type="email"]::placeholder {
+.header-subtitle {
+  font-size: 0.78rem;
   color: var(--text-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: var(--gap-xs);
 }
 
-button {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 14px 20px;
-  border: none;
-  border-radius: 8px;
+/* Export button */
+.export-btn {
+  background: transparent;
+  border: 1px solid var(--border-mid);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  letter-spacing: 0.03em;
+  padding: 0.5rem 1.1rem;
+  border-radius: var(--radius-sm);
   cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.export-btn:hover {
+  border-color: var(--bhairava);
+  color: var(--text-primary);
+  background: var(--bhairava-glow);
+}
+
+/* ============================================================
+   INTRO BAND
+   ============================================================ */
+.intro-band {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: var(--gap-md) var(--gap-xl);
+}
+
+.intro-band p {
+  max-width: 900px;
+  margin: 0 auto;
+  font-size: 0.89rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* ============================================================
+   DISCLAIMER BAND
+   ============================================================ */
+.disclaimer-band {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  background: #180A0F;
+  border-top: 2px solid #C9A962;
+  border-bottom: 1px solid rgba(139,38,53,0.35);
+  padding: var(--gap-sm) var(--gap-xl);
+}
+
+.disclaimer-band .disclaimer-icon {
+  color: #E8C468;
   font-size: 1rem;
-  font-weight: 600;
-  transition: var(--transition);
-  display: block;
-  width: 100%;
-  box-shadow: 0 4px 10px rgba(255, 59, 59, 0.3);
+  flex-shrink: 0;
+  line-height: 1.7;
+}
+
+.disclaimer-band p {
+  max-width: 900px;
+  margin: 0 auto;
+  font-size: 0.84rem;
+  color: #C9A962;
+  line-height: 1.7;
+  font-style: italic;
+}
+
+/* ============================================================
+   FILTER BAR
+   ============================================================ */
+.filter-bar {
+  max-width: 900px;
+  margin: var(--gap-lg) auto 0;
+  padding: 0 var(--gap-xl);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-sm);
+}
+
+.filter-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 100px;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
+  padding: 0.35rem 1rem;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  color: var(--text-primary);
+}
+
+.filter-btn[data-filter="all"].active,
+.filter-btn[data-filter="all"]:hover {
+  border-color: var(--text-secondary);
+  background: rgba(201,169,98,0.12);
+}
+
+.filter-btn[data-filter="bhairava_ashtami"].active,
+.filter-btn[data-filter="bhairava_ashtami"]:hover {
+  border-color: var(--bhairava);
+  background: var(--bhairava-glow);
+}
+
+.filter-btn[data-filter="kali_amavasya"].active,
+.filter-btn[data-filter="kali_amavasya"]:hover {
+  border-color: var(--kali);
+  background: var(--kali-glow);
+}
+
+.filter-btn[data-filter="navaratri"].active,
+.filter-btn[data-filter="navaratri"]:hover {
+  border-color: var(--navaratri);
+  background: var(--navaratri-glow);
+}
+
+.filter-btn[data-filter="eclipse"].active,
+.filter-btn[data-filter="eclipse"]:hover {
+  border-color: var(--eclipse);
+  background: var(--eclipse-glow);
+}
+
+/* ============================================================
+   MAIN CONTENT WRAPPER
+   ============================================================ */
+.main-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--gap-lg) var(--gap-xl) var(--gap-xl);
+  min-height: 70vh;
+}
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+.section {
+  margin-bottom: var(--gap-xl);
+}
+
+.section-title,
+.year-section-title {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: var(--gap-md);
+  padding-bottom: var(--gap-sm);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.year-section-title {
+  margin-top: var(--gap-xl);
+}
+
+/* ============================================================
+   EVENT LIST & CARDS
+   ============================================================ */
+.event-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.event-card {
+  display: flex;
+  align-items: stretch;
+  cursor: pointer;
+  border-radius: var(--radius-md);
   overflow: hidden;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  transition: background var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.event-card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-mid);
+  transform: translateX(3px);
+}
+
+/* Colour stripe on left */
+.event-stripe {
+  width: 4px;
+  flex-shrink: 0;
+}
+
+.event-card[data-cat="bhairava_ashtami"] .event-stripe { background: var(--bhairava); }
+.event-card[data-cat="kali_amavasya"]    .event-stripe { background: var(--kali); }
+.event-card[data-cat="navaratri"]        .event-stripe { background: var(--navaratri); }
+.event-card[data-cat="lunar_eclipse"]    .event-stripe { background: var(--eclipse); }
+.event-card[data-cat="solar_eclipse"]    .event-stripe { background: var(--eclipse); }
+
+.event-body {
+  padding: 0.7rem 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.event-meta {
+  display: flex;
+  align-items: baseline;
+  gap: var(--gap-sm);
+  flex-wrap: wrap;
+}
+
+.event-date {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.event-date.is-today {
+  color: var(--bhairava);
+  font-weight: 500;
+}
+
+.event-title {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.event-desc {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 0.15rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Category label pill */
+.event-cat-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.08rem 0.4rem;
+  border-radius: 100px;
+  flex-shrink: 0;
+}
+
+.event-card[data-cat="bhairava_ashtami"] .event-cat-label { background: var(--bhairava-glow); color: #F4A0A0; }
+.event-card[data-cat="kali_amavasya"]    .event-cat-label { background: var(--kali-glow);     color: #F0B0B8; }
+.event-card[data-cat="navaratri"]        .event-cat-label { background: var(--navaratri-glow); color: #E8C468; }
+.event-card[data-cat="lunar_eclipse"]    .event-cat-label { background: var(--eclipse-glow);  color: #80CCD4; }
+.event-card[data-cat="solar_eclipse"]    .event-cat-label { background: var(--eclipse-glow);  color: #80CCD4; }
+
+/* Upcoming section highlight */
+.upcoming-section .event-card {
+  background: rgba(36, 16, 21, 0.95);
+  border-color: rgba(232,196,104,0.2);
+}
+
+/* "No events" / loading */
+.loading-msg,
+.no-events {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  padding: var(--gap-md) 0;
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+.modal[hidden] { display: none; }
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gap-md);
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(13, 5, 6, 0.88);
+  backdrop-filter: blur(4px);
+}
+
+.modal-box {
   position: relative;
   z-index: 1;
-}
-
-button:before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-lg);
+  padding: var(--gap-lg) var(--gap-xl);
+  max-width: 560px;
   width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: all 0.6s;
-  z-index: -1;
+  max-height: 90dvh;
+  overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.6);
 }
 
-button:hover {
-  background-color: var(--primary-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(255, 59, 59, 0.4);
-}
-
-button:hover:before {
-  left: 100%;
-}
-
-button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(255, 59, 59, 0.3);
-}
-
-button:disabled {
-  background: linear-gradient(45deg, #444, #666);
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-/* Tithi checkbox grid */
-.tithi-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 12px;
-  margin-top: 10px;
-  padding: 15px;
-  background-color: rgba(40, 40, 40, 0.7);
-  border-radius: 8px;
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.tithi-checkbox {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  background-color: var(--card-bg);
-  border-radius: 6px;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  border-left: 3px solid transparent;
-}
-
-.tithi-checkbox:hover {
-  background-color: rgba(50, 50, 50, 0.9);
-  border-left-color: var(--primary-color);
-  transform: translateX(2px);
-}
-
-.tithi-checkbox input {
-  margin-right: 10px;
-  accent-color: var(--primary-color);
-  transform: scale(1.2);
-}
-
-.tithi-checkbox label {
-  color: var(--text-primary);
-  font-weight: 400;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
-}
-
-small {
-  display: block;
-  margin-top: 8px;
-  color: var(--text-muted);
-  font-size: 0.85rem;
-}
-
-/* Message styles */
-.message-area {
-  margin-top: 1.5rem;
-  padding: 0;
-}
-
-.message {
-  padding: 15px;
-  margin-bottom: 1rem;
-  border-radius: 8px;
-  animation: slideIn 0.3s ease-out;
-}
-
-.success {
-  background-color: var(--success-bg);
-  border-left: 4px solid var(--success-color);
-  color: var(--success-color);
-}
-
-.error {
-  background-color: var(--error-bg);
-  border-left: 4px solid var(--error-color);
-  color: var(--error-color);
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Feedback button styling */
-.feedback-btn {
-  display: inline-block;
-  background-color: rgba(40, 40, 40, 0.7);
-  color: var(--text-muted);
-  padding: 10px 20px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-size: 0.9rem;
-  transition: var(--transition);
-  border: 1px solid var(--border-color);
-}
-
-.feedback-btn:hover {
-  background-color: rgba(50, 50, 50, 0.9);
-  color: var(--primary-color);
-  border-color: var(--primary-color);
-}
-
-.feedback-icon {
-  margin-right: 6px;
-}
-
-/* Card styles */
-.card {
-  background-color: rgba(40, 40, 40, 0.9);
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 25px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  border-left: 4px solid var(--primary-color);
-  position: relative;
-  overflow: hidden;
-}
-
-.card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-}
-
-.card-title {
-  color: var(--primary-color);
-  margin-top: 0;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* Icons within the form */
-form .fas {
-  color: var(--primary-color);
-  margin-right: 5px;
-}
-
-/* Footer */
-footer {
-  text-align: center;
-  padding-top: 25px;
-  margin-top: 25px;
-  border-top: 1px solid var(--border-color);
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-}
-
-footer a {
-  color: var(--text-muted);
-  margin: 0 15px;
-  text-decoration: none;
-  transition: color 0.3s;
-  position: relative;
-}
-
-footer a:hover {
-  color: var(--primary-color);
-}
-
-footer a::after {
-  content: '';
+.modal-close {
   position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: -3px;
-  left: 0;
-  background-color: var(--primary-color);
-  transition: width 0.3s ease;
-}
-
-footer a:hover::after {
-  width: 100%;
-}
-
-/* Tab styling */
-.tab-navigation {
-  display: flex;
-  margin-bottom: 25px;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-}
-
-.tab-button {
-  flex: 1;
-  padding: 15px;
-  background-color: var(--card-bg);
-  color: var(--text-muted);
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
   border: none;
-  cursor: pointer;
-  font-weight: 600;
-  transition: var(--transition);
-  position: relative;
-  overflow: hidden;
-}
-
-.tab-button:hover {
-  background-color: rgba(50, 50, 50, 0.9);
-  transform: none;
-  color: var(--text-light);
-}
-
-.tab-button.active {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.tab-button.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 3px;
-  width: 100%;
-  background-color: var(--primary-color);
-}
-
-.tab-pane {
-  display: none;
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-.tab-pane.active {
-  display: block;
-}
-
-/* Add a simple fade-in animation */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* Calendar/Special Days Styling */
-.calendar-container {
-  background-color: rgba(35, 35, 35, 0.9);
-  border-radius: 10px;
-  padding: 25px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-.calendar-container h2 {
-    color: var(--text-light);
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 1.8rem;
-}
-
-.calendar-section {
-  margin-bottom: 35px;
-}
-
-.calendar-section h3 {
-  color: var(--primary-color);
-  border-bottom: 2px solid var(--border-color);
-  padding-bottom: 10px;
-  margin-bottom: 20px;
+  color: var(--text-muted);
   font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition);
 }
 
-.special-days-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 15px;
+.modal-close:hover { color: var(--text-primary); }
+
+.modal-category-tag {
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.6rem;
+  border-radius: 100px;
+  display: inline-block;
+  margin-bottom: var(--gap-sm);
 }
 
-.tithi-card {
-  border: none;
-  border-radius: 10px;
-  padding: 18px;
-  background-color: var(--card-bg);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: var(--transition);
+.modal-category-tag.cat-bhairava_ashtami { background: var(--bhairava-glow); color: #F4A0A0; }
+.modal-category-tag.cat-kali_amavasya    { background: var(--kali-glow);     color: #F0B0B8; }
+.modal-category-tag.cat-navaratri        { background: var(--navaratri-glow); color: #E8C468; }
+.modal-category-tag.cat-lunar_eclipse,
+.modal-category-tag.cat-solar_eclipse    { background: var(--eclipse-glow);  color: #80CCD4; }
+
+.modal-title {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+  line-height: 1.25;
 }
 
-.tithi-card.has-festival {
-  border-left: 4px solid var(--primary-color);
-  background-color: rgba(50, 35, 35, 0.95);
-}
-
-.tithi-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-}
-
-.festival-name {
-  color: var(--primary-color);
-  font-weight: bold;
-  font-size: 1.1rem;
-  margin-bottom: 6px;
-}
-
-.tithi-date {
+.modal-date {
+  font-size: 0.78rem;
   color: var(--text-muted);
-  font-size: 0.9rem;
-  margin-bottom: 8px;
+  margin-bottom: var(--gap-md);
+}
+
+.modal-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--gap-md);
+  line-height: 1.6;
+}
+
+.modal-significance {
+  font-size: 0.87rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  border-left: 3px solid var(--border-mid);
+  padding-left: var(--gap-md);
+  margin-bottom: var(--gap-md);
+}
+
+.modal-links {
+  margin-bottom: var(--gap-md);
   display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-sm);
+}
+
+.modal-links a {
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.2rem 0.6rem;
+  transition: all var(--transition);
+}
+
+.modal-links a:hover {
+  border-color: var(--border-mid);
+  color: var(--text-primary);
+}
+
+.modal-ics-btn {
+  background: transparent;
+  border: 1px solid var(--border-mid);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  width: auto;
+  transition: all var(--transition);
+  display: inline-block;
+}
+
+.modal-ics-btn:hover {
+  border-color: var(--bhairava);
+  color: var(--text-primary);
+  background: var(--bhairava-glow);
+}
+
+/* ============================================================
+   SITE FOOTER
+   ============================================================ */
+.site-footer {
+  max-width: 900px;
+  margin: var(--gap-xl) auto 0;
+  padding: var(--gap-lg) var(--gap-xl) var(--gap-xl);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.site-footer p {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 0.4rem;
+}
+
+.footer-links {
+  display: flex;
+  gap: var(--gap-sm);
   align-items: center;
 }
 
-.tithi-date:before {
-  content: "\f133"; /* Calendar icon from Font Awesome */
-  font-family: "Font Awesome 6 Free";
-  font-weight: 900;
-  margin-right: 5px;
-  color: var(--text-muted);
+.footer-links a { color: var(--text-muted); font-size: 0.76rem; text-decoration: underline; text-underline-offset: 0.2em; text-decoration-color: rgba(184,152,120,0.35); }
+.footer-links a:hover { color: var(--text-secondary); text-decoration-color: var(--text-secondary); }
+.footer-links span { color: var(--text-muted); }
+
+.footer-home-link {
+  margin-bottom: var(--gap-sm);
 }
 
-.tithi-name {
-  font-weight: bold;
-  margin: 5px 0;
-  color: var(--text-light);
+.footer-home-link a {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  letter-spacing: 0.03em;
+  transition: color var(--transition);
 }
 
-/* Loading styles */
-.loading-text {
-  text-align: center;
-  color: var(--text-muted);
-  padding: 20px;
+.footer-home-link a:hover {
+  color: #E8C468;
 }
 
-/* Subscription Status Styles */
-.subscription-details {
-    margin-top: 20px;
-    transition: all 0.3s ease;
-}
-
-.subscription-details.hidden {
-    display: none;
-}
-
-.subscription-details h3 {
-    color: var(--text-light);
-    margin-bottom: 15px;
-}
-
-.subscription-info-box {
-    background-color: var(--card-bg);
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    padding: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    color: var(--text-light);
-}
-
-.subscription-info-box p {
-    margin: 10px 0;
-    color: var(--text-light);
-    text-align: left;
-}
-
-.active-status {
-    background-color: #4caf50;
-    color: white;
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-size: 0.9em;
-    display: inline-block;
-}
-
-.subscribed-tithis-list {
-    background-color: rgba(40, 40, 40, 0.7);
-    padding: 15px 15px 15px 35px;
-    border-radius: 5px;
-    margin: 10px 0;
-    max-height: 200px;
-    overflow-y: auto;
-    columns: 2;
-    color: var(--text-primary);
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
-}
-
-.subscribed-tithis-list li {
-    margin-bottom: 5px;
-    color: var(--text-primary);
-}
-
-.subscription-actions {
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid var(--border-color);
-    text-align: right;
-}
-
-.unsubscribe-link {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-size: 0.9em;
-    padding: 5px 10px;
-    border: 1px solid var(--primary-color);
-    border-radius: 4px;
-    transition: all 0.2s ease;
-}
-
-.unsubscribe-link:hover {
-    background-color: var(--primary-color);
-    color: white;
-}
-
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
 @media (max-width: 600px) {
-    .subscribed-tithis-list {
-        columns: 1;
-    }
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .container {
-    margin: 20px;
-    padding: 20px;
-  }
-  
-  .tithi-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  }
-  
-  h1 {
-    font-size: 1.8rem;
-  }
-  
-  .special-days-list {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 480px) {
-  .container {
-    margin: 10px;
-    padding: 15px;
-  }
-  
-  button {
-    padding: 12px 15px;
-  }
-  
-  .calendar-container {
-    padding: 15px;
-  }
-}
-
-/* Custom scrollbar for webkit browsers */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--dark-bg);
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-color);
-}
-
-/* Glowing effects for special elements */
-.card-title i, 
-h1 i, 
-label i {
-  filter: drop-shadow(0 0 3px rgba(255, 59, 59, 0.4));
-}
-
-/* Add subtle pulse animation to important buttons */
-@keyframes subtle-pulse {
-  0% { box-shadow: 0 0 0 0 rgba(255, 59, 59, 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(255, 59, 59, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(255, 59, 59, 0); }
-}
-
-#submit-button {
-  animation: subtle-pulse 2s infinite;
+  .site-header, .intro-band { padding: var(--gap-md); }
+  .header-inner { flex-direction: column; align-items: flex-start; }
+  .header-right { flex-direction: row; align-items: center; gap: var(--gap-md); }
+  .kali-medallion { width: 72px; height: 72px; }
+  .filter-bar { padding: 0 var(--gap-md); }
+  .main-content { padding: var(--gap-md); }
+  .modal-box { padding: var(--gap-md); }
+  .site-footer { padding: var(--gap-md); }
 }

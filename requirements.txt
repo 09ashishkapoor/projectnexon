@@ -1,2 +1,0 @@
-ephem==4.1.4
-pyswisseph==2.10.3.2

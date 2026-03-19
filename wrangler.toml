@@ -1,0 +1,6 @@
+name = "bhairava-kali-calendar"
+pages_build_output_dir = "."
+compatibility_date = "2026-03-18"
+
+[env.production]
+route = "calendar.jaikhyapaparampara.com/*"
