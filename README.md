@@ -2,7 +2,7 @@
 
 A free, no-account, static web tool for practitioners of Bhairava Baba and Ma Adya Mahakali — covering sacred dates, Navaratri windows, and eclipse times from 2025 through 2030, with one-click `.ics` export for any calendar app.
 
-**Live site:** [bhairavakali.pages.dev](https://bhairavakali.pages.dev) *(update with your URL)*
+**Live site:** [calendar.jaikhyapaparampara.com](https://calendar.jaikhyapaparampara.com)
 
 ---
 
