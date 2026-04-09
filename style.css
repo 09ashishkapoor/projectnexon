@@ -208,6 +208,23 @@ p a:hover {
   line-height: 1.7;
 }
 
+.intro-opensource {
+  margin-top: 0.4rem !important;
+  font-size: 0.8rem !important;
+  opacity: 0.7;
+}
+
+.intro-opensource a {
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.intro-opensource a:hover {
+  opacity: 1;
+  color: var(--text-primary);
+}
+
 /* ============================================================
    DISCLAIMER BAND
    ============================================================ */
