@@ -1,98 +1,124 @@
-# Bhairava Baba and Ma Adya Mahakali Upasana Calendar
+<div align="center">
 
-A free, no-account, static web tool for practitioners of Bhairava Baba and Ma Adya Mahakali — covering sacred dates, Navaratri windows, and eclipse times from 2025 through 2030, with one-click `.ics` export for any calendar app.
+# 🕉️ Bhairava Baba & Ma Adya Mahakali
+## Upasana Calendar
 
-**Live site:** [calendar.jaikhyapaparampara.com](https://calendar.jaikhyapaparampara.com)
+*A sacred planning tool for sincere practitioners*
+
+[![Live Site](https://img.shields.io/badge/Live%20Site-calendar.jaikhyapaparampara.com-8B2252?style=for-the-badge&logo=cloudflare&logoColor=white)](https://calendar.jaikhyapaparampara.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+[![Cloudflare Pages](https://img.shields.io/badge/Hosted%20on-Cloudflare%20Pages-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://pages.cloudflare.com)
+[![No dependencies](https://img.shields.io/badge/Dependencies-None-brightgreen?style=for-the-badge)](package.json)
+
+</div>
 
 ---
 
-## What it includes
+A free, no-account, fully static web tool for practitioners of **Bhairava Baba** and **Ma Adya Mahakali** — sacred dates, all four Navaratri windows, and eclipse times from **2025 through 2030**, with one-click `.ics` export for any calendar app.
 
-| Category | Dates covered |
+> No login. No email. No tracking. Just the dates.
+
+---
+
+## ✨ What's included
+
+| 🗓️ Category | Dates covered |
 |---|---|
-| **Bhairava Ashtami** | Krishna Paksha Ashtami every lunar month |
-| **Ma Kali — Amavasya** | New moon (Amavasya) every lunar month |
-| **Navaratri** | All four: Chaitra, Sharad, Magha Gupt, Ashadha Gupt |
-| **Eclipses** | All lunar and solar eclipses through 2030 |
+| 🔱 **Bhairava Ashtami** | Krishna Paksha Ashtami — every lunar month |
+| 🌑 **Ma Kali — Amavasya** | New moon (Amavasya) — every lunar month |
+| 🌺 **Navaratri** | All four: Chaitra, Sharad, Magha Gupt, Ashadha Gupt |
+| 🌘 **Eclipses** | All lunar and solar eclipses through 2030 |
 
-All dates follow the **IST sunrise rule** (standard Indian panchanga). Practitioners outside India should verify dates at [drikpanchang.com](https://www.drikpanchang.com) with their local city selected.
-
----
-
-## Features
-
-- **No account, no email** — fully client-side, no data collection
-- **Filter by category** — view Bhairava, Kali, Navaratri, or eclipse dates independently
-- **Date significance** — tap any date for notes on its spiritual significance
-- **Calendar export** — download a `.ics` file for import into Google Calendar, Apple Calendar, Outlook, or any standard calendar app
-- **Lightweight** — pure HTML/CSS/JS, no frameworks, no build step
+> All dates follow the **IST sunrise rule** (standard Indian panchanga).  
+> Practitioners **outside India** should verify at [drikpanchang.com](https://www.drikpanchang.com) with their local city selected.
 
 ---
 
-## Using the calendar
+## 🚀 Features
 
-1. Visit the live site, or open `index.html` directly in a browser (no server needed)
+- 🔒 **No account, no email** — fully client-side, zero data collection
+- 🎛️ **Filter by category** — view Bhairava, Kali, Navaratri, or eclipse dates independently
+- 📖 **Date significance** — tap any date for spiritual significance notes
+- 📅 **Calendar export** — download a `.ics` file for Google Calendar, Apple Calendar, Outlook, or any standard app
+- ⚡ **Lightweight** — pure HTML / CSS / JS, no frameworks, no build step
+
+---
+
+## 🖥️ Using the calendar
+
+1. Visit **[calendar.jaikhyapaparampara.com](https://calendar.jaikhyapaparampara.com)** — or open `index.html` locally in any browser
 2. Use the filter buttons to narrow by category
-3. Click any event to read significance notes
-4. Click **Export Calendar (.ics)** to download and import into your calendar
+3. Click any event card to read its significance
+4. Click **↙ Export Calendar (.ics)** to download and import into your calendar app
 
 ---
 
-## Project structure
+## 🗂️ Project structure
 
 ```
-index.html          — main page
-style.css           — all styles
-app.js              — calendar logic, filtering, .ics export
-events.json         — pre-generated event dataset (2025–2030)
-generate_events.js  — script to regenerate events.json from source data
-_headers            — Cloudflare Pages security headers
-wrangler.toml       — Cloudflare Pages deployment config
-
-tithis_2024_2030_basic.json   — tithi source data
-eclipses_2024_2030.json       — NASA eclipse source data
-special_days.json             — supplementary dates
+├── index.html                    # Main page
+├── style.css                     # All styles
+├── app.js                        # Calendar logic, filtering, .ics export
+├── events.json                   # Pre-generated event dataset (2025–2030)
+├── generate_events.js            # Script to regenerate events.json
+├── _headers                      # Cloudflare Pages security headers
+├── wrangler.toml                 # Cloudflare Pages deployment config
+│
+├── tithis_2024_2030_basic.json   # Tithi source data
+├── eclipses_2024_2030.json       # NASA eclipse source data
+└── special_days.json             # Supplementary dates
 ```
 
 ---
 
-## Regenerating event data
+## 🔄 Regenerating event data
 
-If you want to extend or update the dataset:
+To extend or update the dataset:
 
 ```bash
 node generate_events.js
 ```
 
-This reads `tithis_2024_2030_basic.json`, `eclipses_2024_2030.json`, and `special_days.json` and writes a fresh `events.json`. Eclipse data sourced from NASA GSFC — see [ECLIPSE_DATA_SOURCES.md](ECLIPSE_DATA_SOURCES.md) for attribution details.
+This reads the three source JSON files and writes a fresh `events.json`.  
+Eclipse data sourced from NASA GSFC — see [ECLIPSE_DATA_SOURCES.md](ECLIPSE_DATA_SOURCES.md) for full attribution.
 
 ---
 
-## Deployment
+## ☁️ Deployment
 
-The site is a fully static build — no build step required.
+Fully static — no build step required.
 
 ### Cloudflare Pages (recommended)
 
-**Via Git integration (auto-deploy on push):**
+**Via Git integration (auto-deploys on push):**
+
+```
 1. Push this repo to GitHub
-2. In the Cloudflare dashboard → Pages → Connect to Git → select this repo
-3. Build command: *(leave empty)*
-4. Output directory: `.`
-5. Deploy
+2. Cloudflare Dashboard → Pages → Connect to Git → select repo
+3. Build command:    (leave empty)
+   Output directory: .
+4. Deploy
+```
 
 **Via Wrangler CLI:**
+
 ```bash
 npx wrangler pages deploy .
 ```
 
-Files served by Cloudflare Pages:
+**Files served:**
 ```
-index.html  style.css  app.js  events.json  _headers
+index.html  ·  style.css  ·  app.js  ·  events.json  ·  _headers
 ```
 
 ---
 
-## License
+## 📄 License
 
 MIT — see [LICENSE](LICENSE) for details.
+
+---
+
+<div align="center">
+  <sub>Jai Maa Kali &nbsp;·&nbsp; Jai Bhairava Baba</sub>
+</div>
