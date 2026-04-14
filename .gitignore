@@ -138,3 +138,6 @@ archive/
 # Internal planning notes
 newideas.md
 SECURITY_CHECKLIST.md
+
+# OMX local agent state
+.omx/
