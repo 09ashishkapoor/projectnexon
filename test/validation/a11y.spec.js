@@ -13,11 +13,8 @@ function summarizeViolations(violations) {
 test('critical calendar flow stays free of axe violations', async ({ page }) => {
   await gotoCalendar(page);
 
-  const mainResults = await new AxeBuilder({ page })
-    .include('main')
-    .analyze();
-
-  expect(summarizeViolations(mainResults.violations)).toEqual([]);
+  const pageResults = await new AxeBuilder({ page }).analyze();
+  expect(summarizeViolations(pageResults.violations)).toEqual([]);
 
   await openFirstBhairavaEvent(page);
 

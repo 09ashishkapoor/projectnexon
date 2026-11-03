@@ -191,6 +191,12 @@ p a:hover {
   background: var(--bhairava-glow);
 }
 
+.header-right a.export-btn {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
 /* ============================================================
    INTRO BAND
    ============================================================ */
@@ -258,12 +264,66 @@ p a:hover {
    FILTER BAR
    ============================================================ */
 .filter-bar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
   max-width: 900px;
   margin: var(--gap-lg) auto 0;
-  padding: 0 var(--gap-xl);
+  padding: 0.75rem var(--gap-xl);
   display: flex;
   flex-wrap: wrap;
   gap: var(--gap-sm);
+  background: var(--bg-base);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.filter-result {
+  margin: 0 0 0.6rem;
+  min-height: 1.2em;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.year-nav {
+  margin: 0 0 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem 0.9rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.year-nav a {
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-color: rgba(201, 169, 98, 0.4);
+}
+
+.year-nav a:hover {
+  color: var(--text-primary);
+  text-decoration-color: currentColor;
+}
+
+.year-section,
+.upcoming-section {
+  scroll-margin-top: 5rem;
+}
+
+/* Visible focus for every interactive surface */
+.filter-btn:focus-visible,
+.export-btn:focus-visible,
+.event-card:focus-visible,
+.modal-close:focus-visible,
+.modal-ics-btn:focus-visible,
+.year-nav a:focus-visible,
+.footer-links a:focus-visible,
+.intro-band a:focus-visible,
+.disclaimer-band a:focus-visible {
+  outline: 2px solid #E8C468;
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
 .filter-btn {
@@ -645,6 +705,62 @@ p a:hover {
 }
 
 /* ============================================================
+   LEGAL / UTILITY PAGES
+   ============================================================ */
+.legal-page {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: var(--gap-xl) var(--gap-xl) var(--gap-xl);
+}
+
+.legal-page h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-weight: 500;
+  color: #E8C468;
+  line-height: 1.15;
+  margin-bottom: 0.4rem;
+}
+
+.legal-meta {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: var(--gap-lg);
+}
+
+.legal-page h2 {
+  font-family: var(--font-serif);
+  font-size: 1.18rem;
+  font-weight: 500;
+  color: #E8C468;
+  margin: 1.8rem 0 0.5rem;
+}
+
+.legal-page p,
+.legal-page li {
+  font-size: 0.92rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+.legal-page ul {
+  padding-left: 1.2rem;
+  margin: 0.4rem 0 1rem;
+}
+
+.legal-page a {
+  color: #E8C468;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.legal-page .back-link {
+  display: inline-block;
+  margin-top: var(--gap-lg);
+  font-size: 0.84rem;
+}
+
+/* ============================================================
    RESPONSIVE
    ============================================================ */
 @media (max-width: 600px) {
@@ -652,8 +768,27 @@ p a:hover {
   .header-inner { flex-direction: column; align-items: flex-start; }
   .header-right { flex-direction: row; align-items: center; gap: var(--gap-md); }
   .kali-medallion { width: 72px; height: 72px; }
-  .filter-bar { padding: 0 var(--gap-md); }
+  .filter-bar { padding: 0.6rem var(--gap-md); }
   .main-content { padding: var(--gap-md); }
   .modal-box { padding: var(--gap-md); }
   .site-footer { padding: var(--gap-md); }
+  .legal-page { padding: var(--gap-md); }
+  .year-section,
+  .upcoming-section { scroll-margin-top: 7rem; }
+  .event-desc {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .event-card:hover { transform: none; }
 }

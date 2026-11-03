@@ -141,3 +141,7 @@ SECURITY_CHECKLIST.md
 
 # OMX local agent state
 .omx/
+
+# Generated test artifacts
+playwright-report/
+test-results/

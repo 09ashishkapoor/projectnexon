@@ -1,6 +1,8 @@
 # Privacy Policy & Disclaimer
 
-_Last updated: March 18, 2026_
+_Last updated: November 2, 2026_
+
+**Rendered version:** [privacy.html](privacy.html)
 
 ## What This Site Is
 
@@ -35,7 +37,7 @@ For any questions, contact: **kaliputraashish@gmail.com** (best-effort response 
 
 **Date Accuracy:** All tithi dates use the **Indian Standard Time (IST) sunrise rule** — the standard method for panchanga calculation in India. If you are located outside India (e.g., in North America, Europe, or Southeast Asia), the correct observance date may fall **one day earlier or later** than shown, because the tithi prevailing at your local sunrise differs from the one prevailing at sunrise in India. Always verify with a location-aware panchanga (e.g. drikpanchang.com set to your city) before observing a vrata or utsava.
 
-**Eclipse Data:** Eclipse times are sourced from NASA's eclipse catalogue and are given in UTC. Convert to your local timezone for practical use.
+**Eclipse Data:** Eclipse dates and greatest-eclipse times are derived from NASA's eclipse catalogue. Dates are shown in IST; timings are shown in both IST and UTC. Extend the times to local circumstances before making travel or observance plans.
 
 **No Warranties:** This calendar is provided **as-is**, without any warranties or guarantees of accuracy, completeness, or fitness for any particular purpose. Use is entirely voluntary and at your own discretion. No payments or financial transactions are involved.
 

@@ -71,7 +71,9 @@
     "category": "solar_eclipse",
     "eclipse_type": "annular",
     "visibility": "Southern Argentina and Chile, Southern Africa, Antarctica",
-    "description_short": "Annular solar eclipse. Visible: Southern Argentina and Chile, Southern Africa, Antarctica.",
+    "eclipse_utc": "2026-02-17T12:13:05.000Z",
+    "eclipse_ist": "2026-02-17T17:43:05+05:30",
+    "description_short": "Annular solar eclipse. Greatest eclipse 17 Feb 2026, 17:43 IST (17 Feb 2026, 12:13 UTC). Visible: Southern Argentina and Chile, Southern Africa, Antarctica.",
     "significance": "Solar eclipses mark powerful solar-lunar conjunctions considered transformative in tantric practice. Many practitioners observe silence, brahmacharya, and intensified sadhana during this window.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html"
@@ -84,7 +86,9 @@
     "category": "lunar_eclipse",
     "eclipse_type": "total",
     "visibility": "East Asia, Australia, Pacific, Americas",
-    "description_short": "Total lunar eclipse. Visible: East Asia, Australia, Pacific, Americas.",
+    "eclipse_utc": "2026-03-03T11:34:52.000Z",
+    "eclipse_ist": "2026-03-03T17:04:52+05:30",
+    "description_short": "Total lunar eclipse. Greatest eclipse 3 Mar 2026, 17:04 IST (3 Mar 2026, 11:34 UTC). Visible: East Asia, Australia, Pacific, Americas.",
     "significance": "Lunar eclipses are considered auspicious times for inner practice, especially Kali and Bhairava upasana. The period of totality or penumbra is traditional for japa, meditation, and fasting.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html",
@@ -254,7 +258,9 @@
     "category": "solar_eclipse",
     "eclipse_type": "total",
     "visibility": "Northern North America, Western Africa, Europe",
-    "description_short": "Total solar eclipse. Visible: Northern North America, Western Africa, Europe.",
+    "eclipse_utc": "2026-08-12T17:47:05.000Z",
+    "eclipse_ist": "2026-08-12T23:17:05+05:30",
+    "description_short": "Total solar eclipse. Greatest eclipse 12 Aug 2026, 23:17 IST (12 Aug 2026, 17:47 UTC). Visible: Northern North America, Western Africa, Europe.",
     "significance": "Solar eclipses mark powerful solar-lunar conjunctions considered transformative in tantric practice. Many practitioners observe silence, brahmacharya, and intensified sadhana during this window.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html"
@@ -267,7 +273,9 @@
     "category": "lunar_eclipse",
     "eclipse_type": "partial",
     "visibility": "East Pacific, Americas, Europe, Africa",
-    "description_short": "Partial lunar eclipse. Visible: East Pacific, Americas, Europe, Africa.",
+    "eclipse_utc": "2026-08-28T04:14:04.000Z",
+    "eclipse_ist": "2026-08-28T09:44:04+05:30",
+    "description_short": "Partial lunar eclipse. Greatest eclipse 28 Aug 2026, 09:44 IST (28 Aug 2026, 04:14 UTC). Visible: East Pacific, Americas, Europe, Africa.",
     "significance": "Lunar eclipses are considered auspicious times for inner practice, especially Kali and Bhairava upasana. The period of totality or penumbra is traditional for japa, meditation, and fasting.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html",
@@ -450,7 +458,9 @@
     "category": "solar_eclipse",
     "eclipse_type": "annular",
     "visibility": "South America, Antarctica, Western and Southern Africa",
-    "description_short": "Annular solar eclipse. Visible: South America, Antarctica, Western and Southern Africa.",
+    "eclipse_utc": "2027-02-06T16:00:47.000Z",
+    "eclipse_ist": "2027-02-06T21:30:47+05:30",
+    "description_short": "Annular solar eclipse. Greatest eclipse 6 Feb 2027, 21:30 IST (6 Feb 2027, 16:00 UTC). Visible: South America, Antarctica, Western and Southern Africa.",
     "significance": "Solar eclipses mark powerful solar-lunar conjunctions considered transformative in tantric practice. Many practitioners observe silence, brahmacharya, and intensified sadhana during this window.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html"
@@ -458,12 +468,14 @@
   },
   {
     "id": "upasana-cal-0144@bhairava-kali-calendar",
-    "date": "2027-02-20",
+    "date": "2027-02-21",
     "title": "Penumbral Lunar Eclipse",
     "category": "lunar_eclipse",
     "eclipse_type": "penumbral",
     "visibility": "Americas, Europe, Africa, Asia",
-    "description_short": "Penumbral lunar eclipse. Visible: Americas, Europe, Africa, Asia.",
+    "eclipse_utc": "2027-02-20T23:14:06.000Z",
+    "eclipse_ist": "2027-02-21T04:44:06+05:30",
+    "description_short": "Penumbral lunar eclipse. Greatest eclipse 21 Feb 2027, 04:44 IST (20 Feb 2027, 23:14 UTC). Visible: Americas, Europe, Africa, Asia.",
     "significance": "Lunar eclipses are considered auspicious times for inner practice, especially Kali and Bhairava upasana. The period of totality or penumbra is traditional for japa, meditation, and fasting.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html",
@@ -620,7 +632,9 @@
     "category": "lunar_eclipse",
     "eclipse_type": "penumbral",
     "visibility": "East Africa, Asia, Australia, Pacific",
-    "description_short": "Penumbral lunar eclipse. Visible: East Africa, Asia, Australia, Pacific.",
+    "eclipse_utc": "2027-07-18T16:04:09.000Z",
+    "eclipse_ist": "2027-07-18T21:34:09+05:30",
+    "description_short": "Penumbral lunar eclipse. Greatest eclipse 18 Jul 2027, 21:34 IST (18 Jul 2027, 16:04 UTC). Visible: East Africa, Asia, Australia, Pacific.",
     "significance": "Lunar eclipses are considered auspicious times for inner practice, especially Kali and Bhairava upasana. The period of totality or penumbra is traditional for japa, meditation, and fasting.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html",
@@ -660,7 +674,9 @@
     "category": "solar_eclipse",
     "eclipse_type": "total",
     "visibility": "Africa, Europe, Middle East, Western and Southern Asia",
-    "description_short": "Total solar eclipse. Visible: Africa, Europe, Middle East, Western and Southern Asia.",
+    "eclipse_utc": "2027-08-02T10:07:49.000Z",
+    "eclipse_ist": "2027-08-02T15:37:49+05:30",
+    "description_short": "Total solar eclipse. Greatest eclipse 2 Aug 2027, 15:37 IST (2 Aug 2027, 10:07 UTC). Visible: Africa, Europe, Middle East, Western and Southern Asia.",
     "significance": "Solar eclipses mark powerful solar-lunar conjunctions considered transformative in tantric practice. Many practitioners observe silence, brahmacharya, and intensified sadhana during this window.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html"
@@ -673,7 +689,9 @@
     "category": "lunar_eclipse",
     "eclipse_type": "penumbral",
     "visibility": "Pacific, Americas",
-    "description_short": "Penumbral lunar eclipse. Visible: Pacific, Americas.",
+    "eclipse_utc": "2027-08-17T07:14:59.000Z",
+    "eclipse_ist": "2027-08-17T12:44:59+05:30",
+    "description_short": "Penumbral lunar eclipse. Greatest eclipse 17 Aug 2027, 12:44 IST (17 Aug 2027, 07:14 UTC). Visible: Pacific, Americas.",
     "significance": "Lunar eclipses are considered auspicious times for inner practice, especially Kali and Bhairava upasana. The period of totality or penumbra is traditional for japa, meditation, and fasting.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html",
@@ -830,7 +848,9 @@
     "category": "lunar_eclipse",
     "eclipse_type": "partial",
     "visibility": "Americas, Europe, Africa",
-    "description_short": "Partial lunar eclipse. Visible: Americas, Europe, Africa.",
+    "eclipse_utc": "2028-01-12T04:14:13.000Z",
+    "eclipse_ist": "2028-01-12T09:44:13+05:30",
+    "description_short": "Partial lunar eclipse. Greatest eclipse 12 Jan 2028, 09:44 IST (12 Jan 2028, 04:14 UTC). Visible: Americas, Europe, Africa.",
     "significance": "Lunar eclipses are considered auspicious times for inner practice, especially Kali and Bhairava upasana. The period of totality or penumbra is traditional for japa, meditation, and fasting.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html",
@@ -870,7 +890,9 @@
     "category": "solar_eclipse",
     "eclipse_type": "annular",
     "visibility": "Eastern North America, Central and South America, Western Europe, Northwest Africa",
-    "description_short": "Annular solar eclipse. Visible: Eastern North America, Central and South America, Western Europe, Northwest Africa.",
+    "eclipse_utc": "2028-01-26T15:08:58.000Z",
+    "eclipse_ist": "2028-01-26T20:38:58+05:30",
+    "description_short": "Annular solar eclipse. Greatest eclipse 26 Jan 2028, 20:38 IST (26 Jan 2028, 15:08 UTC). Visible: Eastern North America, Central and South America, Western Europe, Northwest Africa.",
     "significance": "Solar eclipses mark powerful solar-lunar conjunctions considered transformative in tantric practice. Many practitioners observe silence, brahmacharya, and intensified sadhana during this window.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html"
@@ -1039,7 +1061,9 @@
     "category": "lunar_eclipse",
     "eclipse_type": "partial",
     "visibility": "Europe, Africa, Asia, Australia",
-    "description_short": "Partial lunar eclipse. Visible: Europe, Africa, Asia, Australia.",
+    "eclipse_utc": "2028-07-06T18:20:57.000Z",
+    "eclipse_ist": "2028-07-06T23:50:57+05:30",
+    "description_short": "Partial lunar eclipse. Greatest eclipse 6 Jul 2028, 23:50 IST (6 Jul 2028, 18:20 UTC). Visible: Europe, Africa, Asia, Australia.",
     "significance": "Lunar eclipses are considered auspicious times for inner practice, especially Kali and Bhairava upasana. The period of totality or penumbra is traditional for japa, meditation, and fasting.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html",
@@ -1079,7 +1103,9 @@
     "category": "solar_eclipse",
     "eclipse_type": "total",
     "visibility": "Southeast Asia, East Indies, Australia, New Zealand",
-    "description_short": "Total solar eclipse. Visible: Southeast Asia, East Indies, Australia, New Zealand.",
+    "eclipse_utc": "2028-07-22T02:56:39.000Z",
+    "eclipse_ist": "2028-07-22T08:26:39+05:30",
+    "description_short": "Total solar eclipse. Greatest eclipse 22 Jul 2028, 08:26 IST (22 Jul 2028, 02:56 UTC). Visible: Southeast Asia, East Indies, Australia, New Zealand.",
     "significance": "Solar eclipses mark powerful solar-lunar conjunctions considered transformative in tantric practice. Many practitioners observe silence, brahmacharya, and intensified sadhana during this window.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html"
@@ -1235,7 +1261,9 @@
     "category": "lunar_eclipse",
     "eclipse_type": "total",
     "visibility": "Europe, Africa, Asia, Australia, Pacific",
-    "description_short": "Total lunar eclipse. Visible: Europe, Africa, Asia, Australia, Pacific.",
+    "eclipse_utc": "2028-12-31T16:53:15.000Z",
+    "eclipse_ist": "2028-12-31T22:23:15+05:30",
+    "description_short": "Total lunar eclipse. Greatest eclipse 31 Dec 2028, 22:23 IST (31 Dec 2028, 16:53 UTC). Visible: Europe, Africa, Asia, Australia, Pacific.",
     "significance": "Lunar eclipses are considered auspicious times for inner practice, especially Kali and Bhairava upasana. The period of totality or penumbra is traditional for japa, meditation, and fasting.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html",
@@ -1275,7 +1303,9 @@
     "category": "solar_eclipse",
     "eclipse_type": "partial",
     "visibility": "North America, Central America",
-    "description_short": "Partial solar eclipse. Visible: North America, Central America.",
+    "eclipse_utc": "2029-01-14T17:13:47.000Z",
+    "eclipse_ist": "2029-01-14T22:43:47+05:30",
+    "description_short": "Partial solar eclipse. Greatest eclipse 14 Jan 2029, 22:43 IST (14 Jan 2029, 17:13 UTC). Visible: North America, Central America.",
     "significance": "Solar eclipses mark powerful solar-lunar conjunctions considered transformative in tantric practice. Many practitioners observe silence, brahmacharya, and intensified sadhana during this window.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html"
@@ -1444,7 +1474,9 @@
     "category": "solar_eclipse",
     "eclipse_type": "partial",
     "visibility": "Arctic, Scandinavia, Alaska, Northern Asia, Northern Canada",
-    "description_short": "Partial solar eclipse. Visible: Arctic, Scandinavia, Alaska, Northern Asia, Northern Canada.",
+    "eclipse_utc": "2029-06-12T04:06:13.000Z",
+    "eclipse_ist": "2029-06-12T09:36:13+05:30",
+    "description_short": "Partial solar eclipse. Greatest eclipse 12 Jun 2029, 09:36 IST (12 Jun 2029, 04:06 UTC). Visible: Arctic, Scandinavia, Alaska, Northern Asia, Northern Canada.",
     "significance": "Solar eclipses mark powerful solar-lunar conjunctions considered transformative in tantric practice. Many practitioners observe silence, brahmacharya, and intensified sadhana during this window.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html"
@@ -1470,7 +1502,9 @@
     "category": "lunar_eclipse",
     "eclipse_type": "total",
     "visibility": "Americas, Europe, Africa, Middle East",
-    "description_short": "Total lunar eclipse. Visible: Americas, Europe, Africa, Middle East.",
+    "eclipse_utc": "2029-06-26T03:23:22.000Z",
+    "eclipse_ist": "2029-06-26T08:53:22+05:30",
+    "description_short": "Total lunar eclipse. Greatest eclipse 26 Jun 2029, 08:53 IST (26 Jun 2029, 03:23 UTC). Visible: Americas, Europe, Africa, Middle East.",
     "significance": "Lunar eclipses are considered auspicious times for inner practice, especially Kali and Bhairava upasana. The period of totality or penumbra is traditional for japa, meditation, and fasting.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html",
@@ -1510,7 +1544,9 @@
     "category": "solar_eclipse",
     "eclipse_type": "partial",
     "visibility": "Southern Chile, Southern Argentina",
-    "description_short": "Partial solar eclipse. Visible: Southern Chile, Southern Argentina.",
+    "eclipse_utc": "2029-07-11T15:37:18.000Z",
+    "eclipse_ist": "2029-07-11T21:07:18+05:30",
+    "description_short": "Partial solar eclipse. Greatest eclipse 11 Jul 2029, 21:07 IST (11 Jul 2029, 15:37 UTC). Visible: Southern Chile, Southern Argentina.",
     "significance": "Solar eclipses mark powerful solar-lunar conjunctions considered transformative in tantric practice. Many practitioners observe silence, brahmacharya, and intensified sadhana during this window.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html"
@@ -1653,7 +1689,9 @@
     "category": "solar_eclipse",
     "eclipse_type": "partial",
     "visibility": "Southern Argentina, Southern Chile, Antarctica",
-    "description_short": "Partial solar eclipse. Visible: Southern Argentina, Southern Chile, Antarctica.",
+    "eclipse_utc": "2029-12-05T15:03:57.000Z",
+    "eclipse_ist": "2029-12-05T20:33:57+05:30",
+    "description_short": "Partial solar eclipse. Greatest eclipse 5 Dec 2029, 20:33 IST (5 Dec 2029, 15:03 UTC). Visible: Southern Argentina, Southern Chile, Antarctica.",
     "significance": "Solar eclipses mark powerful solar-lunar conjunctions considered transformative in tantric practice. Many practitioners observe silence, brahmacharya, and intensified sadhana during this window.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html"
@@ -1661,12 +1699,14 @@
   },
   {
     "id": "upasana-cal-0158@bhairava-kali-calendar",
-    "date": "2029-12-20",
+    "date": "2029-12-21",
     "title": "Total Lunar Eclipse",
     "category": "lunar_eclipse",
     "eclipse_type": "total",
     "visibility": "Americas, Europe, Africa, Asia",
-    "description_short": "Total lunar eclipse. Visible: Americas, Europe, Africa, Asia.",
+    "eclipse_utc": "2029-12-20T22:43:12.000Z",
+    "eclipse_ist": "2029-12-21T04:13:12+05:30",
+    "description_short": "Total lunar eclipse. Greatest eclipse 21 Dec 2029, 04:13 IST (20 Dec 2029, 22:43 UTC). Visible: Americas, Europe, Africa, Asia.",
     "significance": "Lunar eclipses are considered auspicious times for inner practice, especially Kali and Bhairava upasana. The period of totality or penumbra is traditional for japa, meditation, and fasting.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html",
@@ -1875,7 +1915,9 @@
     "category": "solar_eclipse",
     "eclipse_type": "annular",
     "visibility": "Europe, North Africa, Middle East, Asia, Arctic, Alaska",
-    "description_short": "Annular solar eclipse. Visible: Europe, North Africa, Middle East, Asia, Arctic, Alaska.",
+    "eclipse_utc": "2030-06-01T06:29:13.000Z",
+    "eclipse_ist": "2030-06-01T11:59:13+05:30",
+    "description_short": "Annular solar eclipse. Greatest eclipse 1 Jun 2030, 11:59 IST (1 Jun 2030, 06:29 UTC). Visible: Europe, North Africa, Middle East, Asia, Arctic, Alaska.",
     "significance": "Solar eclipses mark powerful solar-lunar conjunctions considered transformative in tantric practice. Many practitioners observe silence, brahmacharya, and intensified sadhana during this window.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html"
@@ -1883,12 +1925,14 @@
   },
   {
     "id": "upasana-cal-0160@bhairava-kali-calendar",
-    "date": "2030-06-15",
+    "date": "2030-06-16",
     "title": "Partial Lunar Eclipse",
     "category": "lunar_eclipse",
     "eclipse_type": "partial",
     "visibility": "Europe, Africa, Asia, Australia",
-    "description_short": "Partial lunar eclipse. Visible: Europe, Africa, Asia, Australia.",
+    "eclipse_utc": "2030-06-15T18:34:34.000Z",
+    "eclipse_ist": "2030-06-16T00:04:34+05:30",
+    "description_short": "Partial lunar eclipse. Greatest eclipse 16 Jun 2030, 00:04 IST (15 Jun 2030, 18:34 UTC). Visible: Europe, Africa, Asia, Australia.",
     "significance": "Lunar eclipses are considered auspicious times for inner practice, especially Kali and Bhairava upasana. The period of totality or penumbra is traditional for japa, meditation, and fasting.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html",
@@ -2071,7 +2115,9 @@
     "category": "solar_eclipse",
     "eclipse_type": "total",
     "visibility": "Southern Africa, Southern Indian Ocean, East Indies, Australia, Antarctica",
-    "description_short": "Total solar eclipse. Visible: Southern Africa, Southern Indian Ocean, East Indies, Australia, Antarctica.",
+    "eclipse_utc": "2030-11-25T06:51:37.000Z",
+    "eclipse_ist": "2030-11-25T12:21:37+05:30",
+    "description_short": "Total solar eclipse. Greatest eclipse 25 Nov 2030, 12:21 IST (25 Nov 2030, 06:51 UTC). Visible: Southern Africa, Southern Indian Ocean, East Indies, Australia, Antarctica.",
     "significance": "Solar eclipses mark powerful solar-lunar conjunctions considered transformative in tantric practice. Many practitioners observe silence, brahmacharya, and intensified sadhana during this window.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html"
@@ -2079,12 +2125,14 @@
   },
   {
     "id": "upasana-cal-0162@bhairava-kali-calendar",
-    "date": "2030-12-09",
+    "date": "2030-12-10",
     "title": "Penumbral Lunar Eclipse",
     "category": "lunar_eclipse",
     "eclipse_type": "penumbral",
     "visibility": "Americas, Europe, Africa, Asia",
-    "description_short": "Penumbral lunar eclipse. Visible: Americas, Europe, Africa, Asia.",
+    "eclipse_utc": "2030-12-09T22:28:51.000Z",
+    "eclipse_ist": "2030-12-10T03:58:51+05:30",
+    "description_short": "Penumbral lunar eclipse. Greatest eclipse 10 Dec 2030, 03:58 IST (9 Dec 2030, 22:28 UTC). Visible: Americas, Europe, Africa, Asia.",
     "significance": "Lunar eclipses are considered auspicious times for inner practice, especially Kali and Bhairava upasana. The period of totality or penumbra is traditional for japa, meditation, and fasting.",
     "source_links": [
       "https://eclipse.gsfc.nasa.gov/eclipse.html",

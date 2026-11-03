@@ -1,0 +1,24 @@
+{
+  "name": "Bhairava Baba and Ma Adya Mahakali Upasana Calendar",
+  "short_name": "Upasana Calendar",
+  "description": "Sacred Bhairava and Ma Adya Mahakali lunar dates, Navaratri windows, and eclipse timings through 2030.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0D0506",
+  "theme_color": "#0D0506",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

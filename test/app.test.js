@@ -147,6 +147,7 @@ class FakeDocument {
     [
       'upcoming-list',
       'year-sections',
+      'filter-result',
       'export-btn',
       'modal-close',
       'modal-backdrop',
@@ -276,6 +277,10 @@ test('app.js renders, filters, and exports current view', async () => {
   const filteredYearCards = yearSections.children.flatMap((section) => section.children[1].children);
 
   assert.ok(eclipseButton.classList.contains('active'));
+  assert.equal(eclipseButton.getAttribute('aria-pressed'), 'true');
+  assert.equal(allButton.getAttribute('aria-pressed'), 'false');
+  assert.equal(document.getElementById('filter-result').textContent, 'Showing 24 dates for eclipse');
+  assert.match(document.getElementById('export-btn').textContent, /Export filtered \(24\)/);
   assert.ok(upcomingList.children.every((card) => ['lunar_eclipse', 'solar_eclipse'].includes(card.dataset.cat)));
   assert.ok(filteredYearCards.length > 0);
   assert.ok(filteredYearCards.every((card) => ['lunar_eclipse', 'solar_eclipse'].includes(card.dataset.cat)));
@@ -288,12 +293,19 @@ test('app.js renders, filters, and exports current view', async () => {
   assert.doesNotMatch(ics, /SUMMARY:Kala Bhairava Ashtami/);
   assert.doesNotMatch(ics, /SUMMARY:Amavasya/);
   assert.match(ics, /Lunar Eclipse|Solar Eclipse/);
+  assert.match(ics, /UID:upasana-cal-\d+@bhairava-kali-calendar/);
+  assert.doesNotMatch(ics, /@bhairava-kali-calendar@bhairava-kali-calendar/);
+  assert.ok(ics.includes('\\n'), 'ICS descriptions should contain escaped line breaks');
+  assert.ok(!ics.includes('\\\\n'), 'ICS descriptions should not contain double-escaped line breaks');
   assert.deepEqual(document.revokedUrls, ['blob:calendar']);
 
   allButton.click();
   const restoredYearCards = yearSections.children.flatMap((section) => section.children[1].children);
 
   assert.ok(allButton.classList.contains('active'));
+  assert.equal(allButton.getAttribute('aria-pressed'), 'true');
+  assert.match(document.getElementById('filter-result').textContent, /^Showing all 162 dates$/);
+  assert.match(document.getElementById('export-btn').textContent, /Export Calendar/);
   assert.ok(upcomingList.children.some((card) => !['lunar_eclipse', 'solar_eclipse'].includes(card.dataset.cat)));
   assert.ok(restoredYearCards.some((card) => !['lunar_eclipse', 'solar_eclipse'].includes(card.dataset.cat)));
   assert.ok(yearSections.children.length > 1);
@@ -332,6 +344,11 @@ test('app.js opens and closes modal with selected event details', async () => {
   assert.equal(document.body.style.overflow, 'hidden');
   assert.equal(document.activeElement.id, 'modal-close');
 
+  // Tabbing from the last focusable element wraps back to the close button.
+  document.getElementById('modal-ics-btn').focus();
+  modal.dispatchEvent({ type: 'keydown', key: 'Tab', shiftKey: false, preventDefault() {} });
+  assert.equal(document.activeElement.id, 'modal-close');
+
   document.getElementById('modal-ics-btn').click();
   assert.equal(document.lastDownload.download, 'kala_bhairava_ashtami.ics');
   const singleEventIcs = document.lastDownload.blob.text();
@@ -340,6 +357,7 @@ test('app.js opens and closes modal with selected event details', async () => {
 
   document.getElementById('modal-close').click();
   assert.equal(modal.getAttribute('hidden'), '');
+  assert.equal(document.activeElement, upcomingCard);
 
   upcomingCard.click();
   document.getElementById('modal-backdrop').click();

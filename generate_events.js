@@ -15,6 +15,33 @@ const YEARS = ['2026', '2027', '2028', '2029', '2030'];
 const events = [];
 let idCounter = 1;
 
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const IST_OFFSET_MS = 330 * 60 * 1000;
+
+function dateLabel(isoDate) {
+  const [year, month, day] = isoDate.split('-').map(Number);
+  return `${day} ${MONTHS[month - 1]} ${year}`;
+}
+
+/** Convert the NASA UTC greatest-eclipse instant into its IST calendar date and display strings. */
+function eclipseTiming(entry) {
+  const utc = new Date(`${entry.date}T${entry.td_greatest_eclipse_utc}Z`);
+  const ist = new Date(utc.getTime() + IST_OFFSET_MS);
+  const utcDate = utc.toISOString().slice(0, 10);
+  const istDate = ist.toISOString().slice(0, 10);
+  const utcTime = utc.toISOString().slice(11, 16);
+  const istTime = ist.toISOString().slice(11, 16);
+
+  return {
+    date: istDate,
+    utcDate,
+    utcTime,
+    istTime,
+    eclipse_utc: utc.toISOString(),
+    eclipse_ist: `${ist.toISOString().replace('.000Z', '')}+05:30`,
+  };
+}
+
 const eclipseMeta = {
   lunar: {
     category: 'lunar_eclipse',
@@ -175,14 +202,17 @@ eclipses
     const meta = eclipseMeta[entry.kind];
     const typeLabel = entry.eclipse_type.charAt(0).toUpperCase() + entry.eclipse_type.slice(1);
     const kindLabel = entry.kind === 'lunar' ? 'Lunar' : 'Solar';
+    const timing = eclipseTiming(entry);
 
     addEvent({
-      date: entry.date,
+      date: timing.date,
       title: `${typeLabel} ${kindLabel} Eclipse`,
       category: meta.category,
       eclipse_type: entry.eclipse_type,
       visibility: entry.visibility,
-      description_short: `${typeLabel} ${entry.kind} eclipse. Visible: ${entry.visibility}.`,
+      eclipse_utc: timing.eclipse_utc,
+      eclipse_ist: timing.eclipse_ist,
+      description_short: `${typeLabel} ${entry.kind} eclipse. Greatest eclipse ${dateLabel(timing.date)}, ${timing.istTime} IST (${dateLabel(timing.utcDate)}, ${timing.utcTime} UTC). Visible: ${entry.visibility}.`,
       significance: meta.significance,
       source_links: meta.source_links
     });

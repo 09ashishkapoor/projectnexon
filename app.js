@@ -10,7 +10,7 @@
   // ─── State ──────────────────────────────────────────────────────────────────
   let ALL_EVENTS = [];
   let activeFilter = 'all';
-  let openEventId  = null;
+  let lastTrigger = null;
 
   // ─── Utilities ──────────────────────────────────────────────────────────────
 
@@ -43,13 +43,10 @@
     return `${s.getDate()}–${e.getDate()} ${eMonth} ${eYear}`;
   }
 
-  /** Returns today as "YYYY-MM-DD" */
+  /** Returns today in IST as "YYYY-MM-DD" — the calendar's reference timezone. */
   function todayStr() {
-    const t = new Date();
-    const y = t.getFullYear();
-    const m = String(t.getMonth() + 1).padStart(2, '0');
-    const d = String(t.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
+    const ist = new Date(Date.now() + 330 * 60 * 1000);
+    return ist.toISOString().slice(0, 10);
   }
 
   /** Human-readable category label */
@@ -61,8 +58,20 @@
     solar_eclipse:    'Solar Eclipse',
   };
 
+  const FILTER_LABELS = {
+    all:               'all',
+    bhairava_ashtami: 'Bhairava',
+    kali_amavasya:    'Ma Kali',
+    navaratri:        'Navaratri',
+    eclipse:          'eclipse',
+  };
+
   function catLabel(cat) {
     return CAT_LABELS[cat] || cat;
+  }
+
+  function pluralDates(count) {
+    return `${count} ${count === 1 ? 'date' : 'dates'}`;
   }
 
   // ─── ICS generation ─────────────────────────────────────────────────────────
@@ -99,12 +108,12 @@
 
     const lines = [
       'BEGIN:VEVENT',
-      icsWrapLine(`UID:${ev.id}@bhairava-kali-calendar`),
+      icsWrapLine(`UID:${ev.id}`),
       `DTSTAMP:${now}`,
       icsWrapLine(`DTSTART;VALUE=DATE:${dtstart}`),
       icsWrapLine(`DTEND;VALUE=DATE:${endDateExclusive}`),
       icsWrapLine(`SUMMARY:${icsTxt(ev.title)}`),
-      icsWrapLine(`DESCRIPTION:${icsTxt(ev.description_short + '\\n\\n' + ev.significance)}`),
+      icsWrapLine(`DESCRIPTION:${icsTxt(ev.description_short + '\n\n' + ev.significance)}`),
       icsWrapLine(`CATEGORIES:${icsTxt(catLabel(ev.category))}`),
     ];
     if (ev.source_links && ev.source_links.length > 0) {
@@ -183,6 +192,7 @@
     card.dataset.id  = ev.id;
     card.setAttribute('role', 'button');
     card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-haspopup', 'dialog');
     card.setAttribute('aria-label', `${ev.title}, ${dateText}`);
 
     card.innerHTML = `
@@ -197,9 +207,9 @@
       </div>
     `;
 
-    card.addEventListener('click', () => openModal(ev));
+    card.addEventListener('click', () => openModal(ev, card));
     card.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(ev); }
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(ev, card); }
     });
 
     return card;
@@ -210,7 +220,7 @@
     list.innerHTML = '';
 
     const upcoming = events
-      .filter(e => e.date >= today)
+      .filter(e => (e.date_end || e.date) >= today)
       .slice(0, 8);
 
     if (upcoming.length === 0) {
@@ -238,6 +248,7 @@
     sortedYears.forEach(yr => {
       const section = document.createElement('section');
       section.className = 'section year-section';
+      section.id = `year-${yr}`;
       section.setAttribute('aria-label', `Events in ${yr}`);
 
       const title = document.createElement('h2');
@@ -254,19 +265,56 @@
     });
   }
 
+  function updateChrome(count) {
+    const result = document.getElementById('filter-result');
+    if (result) {
+      result.textContent = activeFilter === 'all'
+        ? `Showing all ${pluralDates(count)}`
+        : `Showing ${pluralDates(count)} for ${FILTER_LABELS[activeFilter] || activeFilter}`;
+    }
+
+    const exportBtn = document.getElementById('export-btn');
+    if (exportBtn) {
+      if (activeFilter === 'all') {
+        exportBtn.textContent = '⇩ Export Calendar (.ics)';
+        exportBtn.title = `Download all ${pluralDates(count)} as .ics for Google Calendar / Outlook`;
+      } else {
+        exportBtn.textContent = `⇩ Export filtered (${count})`;
+        exportBtn.title = `Download the ${pluralDates(count)} in this filter as .ics`;
+      }
+    }
+
+    document.querySelectorAll('.filter-btn').forEach((btn) => {
+      btn.setAttribute('aria-pressed', String(btn.dataset.filter === activeFilter));
+    });
+  }
+
   function render() {
     const today    = todayStr();
     const filtered = filterEvents(ALL_EVENTS);
 
     renderUpcoming(filtered, today);
     renderYearSections(filtered, today);
+    updateChrome(filtered.length);
   }
 
   // ─── Modal ────────────────────────────────────────────────────────────────────
 
-  function openModal(ev) {
-    openEventId = ev.id;
+  let modalOpen = false;
+
+  function setBackgroundInert(inert) {
     const modal = document.getElementById('event-modal');
+    Array.from(document.body.children).forEach((el) => {
+      if (el !== modal && el.tagName !== 'SCRIPT' && el.tagName !== 'STYLE') {
+        el.inert = inert;
+      }
+    });
+  }
+
+  function openModal(ev, trigger) {
+    const modal = document.getElementById('event-modal');
+    lastTrigger = trigger || document.activeElement;
+    modalOpen = true;
     const dateText = ev.date_end ? fmtDateRange(ev.date, ev.date_end) : fmtDate(ev.date);
 
     document.getElementById('modal-tag').className = `modal-category-tag cat-${ev.category}`;
@@ -299,14 +347,32 @@
     };
 
     modal.removeAttribute('hidden');
+    setBackgroundInert(true);
     document.getElementById('modal-close').focus();
     document.body.style.overflow = 'hidden';
   }
 
   function closeModal() {
+    if (!modalOpen) return;
+    modalOpen = false;
     document.getElementById('event-modal').setAttribute('hidden', '');
+    setBackgroundInert(false);
     document.body.style.overflow = '';
-    openEventId = null;
+    if (lastTrigger && typeof lastTrigger.focus === 'function') lastTrigger.focus();
+    lastTrigger = null;
+  }
+
+  function trapModalFocus(e) {
+    if (!modalOpen || e.key !== 'Tab') return;
+    const closeBtn = document.getElementById('modal-close');
+    const lastBtn = document.getElementById('modal-ics-btn');
+    if (!e.shiftKey && document.activeElement === lastBtn) {
+      e.preventDefault();
+      closeBtn.focus();
+    } else if (e.shiftKey && document.activeElement === closeBtn) {
+      e.preventDefault();
+      lastBtn.focus();
+    }
   }
 
   // ─── Event Listeners ─────────────────────────────────────────────────────────
@@ -322,20 +388,21 @@
       });
     });
 
-    // Export all button
+    // Export button — exports the current view, labelled dynamically in updateChrome().
     document.getElementById('export-btn').addEventListener('click', () => {
       const toExport = filterEvents(ALL_EVENTS);
       const ics = buildICS(toExport, 'Bhairava Baba and Ma Adya Mahakali Upasana Calendar');
       downloadFile(ics, 'upasana-calendar.ics', 'text/calendar;charset=utf-8');
     });
 
-    // Modal close
+    // Modal close and focus containment
     document.getElementById('modal-close').addEventListener('click', closeModal);
     document.getElementById('modal-backdrop').addEventListener('click', closeModal);
+    document.getElementById('event-modal').addEventListener('keydown', trapModalFocus);
 
-    // Keyboard: Escape closes modal
+    // Escape closes the modal only while it is open.
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
+      if (e.key === 'Escape' && modalOpen) closeModal();
     });
   }
 

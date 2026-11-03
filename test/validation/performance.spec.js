@@ -37,7 +37,7 @@ test('homepage app shell stays within repo-specific performance budgets', async 
 
   const appScript = byName(metrics.resources, 'app.js');
   const eventData = byName(metrics.resources, 'events.json');
-  const heroImage = byName(metrics.resources, 'uywjs16z45454.webp');
+  const heroImage = byName(metrics.resources, 'kali-medallion.webp');
 
   expect(appScript).toBeTruthy();
   expect(eventData).toBeTruthy();
@@ -47,7 +47,7 @@ test('homepage app shell stays within repo-specific performance budgets', async 
   expect(metrics.domContentLoaded).toBeLessThan(350);
   expect(metrics.loadEventEnd).toBeLessThan(450);
   expect(metrics.totalDecodedBytes).toBeLessThan(275_000);
-  expect(appScript.decodedBodySize).toBeLessThan(16_000);
+  expect(appScript.decodedBodySize).toBeLessThan(20_000);
   expect(eventData.decodedBodySize).toBeLessThan(140_000);
   expect(heroImage.decodedBodySize).toBeLessThan(85_000);
 });

@@ -5,10 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bhairava Baba and Ma Adya Mahakali Upasana Calendar</title>
     <meta name="description" content="A focused upasana calendar for Bhairava Baba and Ma Adya Mahakali practitioners — sacred dates, Navaratri windows, and eclipse times through 2030, with calendar export.">
+    <meta name="author" content="Jai Khyapa Parampara">
+    <meta name="theme-color" content="#0D0506">
+    <link rel="canonical" href="https://calendar.jaikhyapaparampara.com/">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://calendar.jaikhyapaparampara.com/">
+    <meta property="og:title" content="Bhairava Baba and Ma Adya Mahakali Upasana Calendar">
+    <meta property="og:description" content="Sacred Bhairava and Ma Adya Mahakali dates, all four Navaratri windows, and eclipse timings through 2030. Free, no account needed.">
+    <meta property="og:image" content="https://calendar.jaikhyapaparampara.com/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Bhairava Baba and Ma Adya Mahakali Upasana Calendar, 2026–2030">
+    <meta property="og:site_name" content="Jai Khyapa Parampara">
+    <meta property="og:locale" content="en_IN">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Bhairava Baba and Ma Adya Mahakali Upasana Calendar">
+    <meta name="twitter:description" content="Sacred Bhairava and Ma Adya Mahakali dates, all four Navaratri windows, and eclipse timings through 2030.">
+    <meta name="twitter:image" content="https://calendar.jaikhyapaparampara.com/og-image.png">
+    <meta name="twitter:image:alt" content="Bhairava Baba and Ma Adya Mahakali Upasana Calendar, 2026–2030">
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/manifest.json">
+
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Inter:wght@300;400;500&display=optional" rel="stylesheet">
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "@id": "https://calendar.jaikhyapaparampara.com/#webpage",
+        "url": "https://calendar.jaikhyapaparampara.com/",
+        "name": "Bhairava Baba and Ma Adya Mahakali Upasana Calendar",
+        "description": "A focused upasana calendar for Bhairava Baba and Ma Adya Mahakali practitioners — sacred lunar dates, Navaratri windows, and eclipse timings through 2030.",
+        "inLanguage": "en",
+        "dateModified": "2026-11-02",
+        "isPartOf": {
+          "@type": "WebSite",
+          "@id": "https://jaikhyapaparampara.com/#website",
+          "name": "Jai Khyapa Parampara",
+          "url": "https://jaikhyapaparampara.com/"
+        },
+        "about": [
+          "Bhairava",
+          "Ma Adya Mahakali",
+          "Navaratri",
+          "Eclipses",
+          "Upasana calendar"
+        ]
+      }
+    </script>
 </head>
 <body>
 
@@ -21,38 +72,47 @@
       </div>
       <div class="header-right">
         <div class="kali-medallion" aria-hidden="true">
-          <img src="uywjs16z45454.webp" alt="" class="kali-medallion-img" loading="eager">
+          <img src="kali-medallion.webp" alt="" class="kali-medallion-img" width="100" height="100" loading="eager">
         </div>
-        <button id="export-btn" class="export-btn" title="Download all events as .ics for Google Calendar / Outlook">
+        <button id="export-btn" type="button" class="export-btn" title="Download all events as .ics for Google Calendar / Outlook">
           &#8659; Export Calendar (.ics)
         </button>
       </div>
     </div>
   </header>
 
-  <!-- INTRO -->
-  <div class="intro-band">
-    <p>A focused sadhana planning tool for Bhairava Baba and Ma Adya Mahakali practitioners — significant lunar dates, Navaratri windows, and eclipse times through 2030, calculated for <strong>India (IST)</strong>. No accounts, no email needed.</p>
+  <div class="intro-band" role="region" aria-label="About this calendar">
+    <p>A focused sadhana planning tool for Bhairava Baba and Ma Adya Mahakali practitioners — significant lunar dates, Navaratri windows, and eclipse timings through 2030. Tithi dates follow the India (IST) sunrise rule; eclipse timings are shown in IST and UTC.</p>
     <p class="intro-opensource">Open source &mdash; <a href="https://github.com/09ashishkapoor/projectnexon" target="_blank" rel="noopener">view on GitHub</a></p>
   </div>
 
   <!-- DISCLAIMER -->
-  <div class="disclaimer-band" role="note">
-    <span class="disclaimer-icon">&#9432;</span>
-    <p>All dates follow the <strong>IST sunrise rule</strong> (standard Indian panchanga). Practitioners <strong>outside India</strong> may need to observe some tithis one day earlier — verify at <a href="https://www.drikpanchang.com" target="_blank" rel="noopener">drikpanchang.com</a> with your city selected.</p>
+  <div class="disclaimer-band" role="region" aria-label="Date accuracy note">
+    <span class="disclaimer-icon" aria-hidden="true">&#9432;</span>
+    <p>All tithi dates follow the <strong>IST sunrise rule</strong> (standard Indian panchanga). Practitioners <strong>outside India</strong> may need to observe some tithis one day earlier — verify at <a href="https://www.drikpanchang.com" target="_blank" rel="noopener">drikpanchang.com</a> with your city selected. Eclipse entries show the greatest-eclipse time in IST and UTC.</p>
   </div>
 
   <!-- FILTER BAR -->
-  <div class="filter-bar" role="group" aria-label="Filter events by category">
-    <button class="filter-btn active" data-filter="all">All</button>
-    <button class="filter-btn" data-filter="bhairava_ashtami">&#9670; Bhairava</button>
-    <button class="filter-btn" data-filter="kali_amavasya">&#9670; Ma Kali</button>
-    <button class="filter-btn" data-filter="navaratri">&#9670; Navaratri</button>
-    <button class="filter-btn" data-filter="eclipse">&#9670; Eclipse</button>
+  <div class="filter-bar" role="region" aria-label="Filter events by category">
+    <button type="button" class="filter-btn active" data-filter="all" aria-pressed="true">All</button>
+    <button type="button" class="filter-btn" data-filter="bhairava_ashtami" aria-pressed="false">&#9670; Bhairava</button>
+    <button type="button" class="filter-btn" data-filter="kali_amavasya" aria-pressed="false">&#9670; Ma Kali</button>
+    <button type="button" class="filter-btn" data-filter="navaratri" aria-pressed="false">&#9670; Navaratri</button>
+    <button type="button" class="filter-btn" data-filter="eclipse" aria-pressed="false">&#9670; Eclipse</button>
   </div>
 
-  <!-- MAIN CONTENT -->
   <main id="main-content" class="main-content">
+
+    <p class="filter-result" id="filter-result" role="status" aria-live="polite"></p>
+
+    <nav class="year-nav" aria-label="Jump to year">
+      <span>Jump to</span>
+      <a href="#year-2026">2026</a>
+      <a href="#year-2027">2027</a>
+      <a href="#year-2028">2028</a>
+      <a href="#year-2029">2029</a>
+      <a href="#year-2030">2030</a>
+    </nav>
 
     <!-- UPCOMING SECTION -->
     <section class="section upcoming-section" id="upcoming-section">
@@ -71,26 +131,26 @@
   <div id="event-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
     <div class="modal-backdrop" id="modal-backdrop"></div>
     <div class="modal-box">
-      <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
+      <button class="modal-close" id="modal-close" type="button" aria-label="Close">&times;</button>
       <div class="modal-category-tag" id="modal-tag"></div>
       <h3 class="modal-title" id="modal-title"></h3>
       <p class="modal-date" id="modal-date"></p>
       <p class="modal-desc" id="modal-desc"></p>
       <p class="modal-significance" id="modal-significance"></p>
       <div class="modal-links" id="modal-links"></div>
-      <button class="modal-ics-btn" id="modal-ics-btn">&#8659; Add to Calendar (.ics)</button>
+      <button class="modal-ics-btn" id="modal-ics-btn" type="button">&#8659; Add to Calendar (.ics)</button>
     </div>
   </div>
 
   <!-- FOOTER -->
   <footer class="site-footer">
     <p class="footer-home-link">
-      <a href="https://www.jaikhyapaparampara.com" target="_blank" rel="noopener">
+      <a href="https://jaikhyapaparampara.com" target="_blank" rel="noopener">
         &#8592; Jai Khyapa Parampara
       </a>
     </p>
     <p class="footer-links">
-      <a href="PRIVACY.md" target="_blank">Privacy &amp; Disclaimer</a>
+      <a href="privacy.html">Privacy &amp; Disclaimer</a>
       <span>&middot;</span>
       <a href="https://eclipse.gsfc.nasa.gov/eclipse.html" target="_blank" rel="noopener">Eclipse Data: NASA</a>
     </p>

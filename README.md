@@ -27,19 +27,21 @@ A free, no-account, fully static web tool for practitioners of **Bhairava Baba**
 | 🔱 **Bhairava Ashtami** | Krishna Paksha Ashtami — every lunar month |
 | 🌑 **Ma Kali — Amavasya** | New moon (Amavasya) — every lunar month |
 | 🌺 **Navaratri** | All four: Chaitra, Sharad, Magha Gupt, Ashadha Gupt |
-| 🌘 **Eclipses** | All lunar and solar eclipses through 2030 |
+| 🌘 **Eclipses** | All lunar and solar eclipses through 2030, with greatest-eclipse times in IST and UTC |
 
-> All dates follow **IST sunrise rule** (standard Indian panchanga).  
+> All tithi dates follow the **IST sunrise rule** (standard Indian panchanga).  
+> Eclipse dates are converted to IST; greatest-eclipse times are shown in both IST and UTC.  
 > Practitioners **outside India** should verify at [drikpanchang.com](https://www.drikpanchang.com) with local city selected.
 
 ---
 
 ## 🚀 Features
 
-- 🔒 **No account, no email** — fully client-side, zero data collection
+- 🔒 **No account, no email** — fully client-side, no application analytics
 - 🎛️ **Filter by category** — view Bhairava, Kali, Navaratri, or eclipse dates independently
 - 📖 **Date significance** — open any date for spiritual significance notes
-- 📅 **Calendar export** — download `.ics` for Google Calendar, Apple Calendar, Outlook, or any standard app
+- 🌘 **Eclipse detail** — greatest-eclipse time in IST and UTC for every eclipse
+- 📅 **Calendar export** — download the full schedule or the current filter as `.ics`
 - ⚡ **Lightweight** — pure HTML / CSS / JS, no framework, no site build step
 
 ---
@@ -57,12 +59,22 @@ A free, no-account, fully static web tool for practitioners of **Bhairava Baba**
 
 ```text
 ├── index.html                    # Main page
+├── privacy.html                  # Rendered privacy policy and disclaimer
+├── 404.html                      # Styled not-found page
 ├── style.css                     # All styles
 ├── app.js                        # Calendar logic, filtering, .ics export
 ├── events.json                   # Pre-generated event dataset (2026–2030)
 ├── generate_events.js            # Script to regenerate events.json
 ├── _headers                      # Cloudflare Pages security headers
 ├── wrangler.toml                 # Cloudflare Pages deployment config
+├── robots.txt / sitemap.xml      # Crawler files
+├── manifest.json                 # PWA manifest
+├── favicon.ico                   # Browser icon
+├── favicon-32x32.png
+├── apple-touch-icon.png
+├── icon-192.png / icon-512.png   # PWA icons
+├── kali-medallion.webp           # Header artwork
+├── og-image.png                  # Social sharing card
 │
 ├── tithis_2024_2030_basic.json   # Tithi source data
 ├── eclipses_2024_2030.json       # NASA eclipse source data
@@ -138,8 +150,13 @@ npx wrangler pages deploy .
 **Files served:**
 
 ```text
-index.html  ·  style.css  ·  app.js  ·  events.json  ·  _headers
+index.html  ·  privacy.html  ·  404.html  ·  style.css  ·  app.js  ·  events.json  ·  _headers
+robots.txt  ·  sitemap.xml  ·  manifest.json  ·  favicon.ico  ·  og-image.png
 ```
+
+### Privacy / tracking note
+
+The project does not include analytics or tracking scripts. The Content Security Policy intentionally allows scripts only from `'self'`; if Cloudflare Web Analytics is enabled for the Pages project, disable it in the Cloudflare dashboard so the hosting layer does not inject a beacon that the CSP blocks.
 
 ---
 

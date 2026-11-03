@@ -18,6 +18,7 @@ This repository file documents the source references used for eclipses in [eclip
 - Date format: YYYY-MM-DD.
 - Time format: HH:MM:SS in UTC (greatest eclipse).
 - Visibility text is normalized from NASA abbreviations for readability.
+- `generate_events.js` converts eclipse dates to IST for the calendar and includes the greatest-eclipse time in both IST and UTC in each event.
 - This file can be regenerated from the same NASA decade tables if needed.
 
 ## Acknowledgment
