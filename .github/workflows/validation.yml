@@ -58,6 +58,7 @@ jobs:
             --verbose
             --no-progress
             --accept 200..=299,429
+            --root-dir .
             README.md
             index.html
             PRIVACY.md
